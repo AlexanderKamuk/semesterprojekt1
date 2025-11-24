@@ -14,7 +14,7 @@ magnet = Electromagnet()
 #magnet.start()
 
 #magnet.stop()
-    #This it how the magnet stops
+
 
 
 
