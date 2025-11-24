@@ -38,7 +38,7 @@ max_delay_us=1000
 min_delay_us=500
 move_unit="dist"
 
-turnmode="curve"
+#turnmode="curve"
 
 # Generel driving class calls
 turnLeft=DifferentialDrive(left, right, stepmode, microsteps_per_step, pwm_pct, "l", turnmode, frequency)
