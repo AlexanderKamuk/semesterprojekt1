@@ -11,7 +11,7 @@ class Electromagnet:
         self.pwm.duty_u16(0) #Min duty
 
 magnet = Electromagnet()
-#magnet.start()
+magnet.start()
 
 #magnet.stop()
 
