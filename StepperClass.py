@@ -18,9 +18,6 @@ class StepperMotor:
         # Initialize PWM for each pin
         self.pins = [PWM(Pin(pin)) for pin in pins]
         
-        # Motor parameters
-        #self.steps_per_rev = steps_per_rev  # Steps per revolution
-        
         # Curve parameter
         self.curve=curve
 
