@@ -1,0 +1,18 @@
+Push files to git:
+- Put file in folder (semesterprojekt1)
+- in terminal write:
+	- "git add ."
+	- "git commit"
+- New window appears. press "i", write message for the push, and press 'esc'
+- press ':' and write "wq"
+- write "git push"
+
+
+Clone folder from git:
+- write "git clone [link to online git repository]"
+
+
+Update local files:
+- in terminal write "git pull"
+- New window appears. press "i", write message for the pull, and press 'esc'
+- press ':' and write "wq"
