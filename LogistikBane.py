@@ -1,4 +1,4 @@
-from LDR_Turn_ReactionClass import TrackDriving
+from LDR_Turn_ReactionClassV2 import TrackDriving
 
 Drive = TrackDriving()
 Drive.runrobot()
