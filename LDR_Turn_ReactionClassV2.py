@@ -4,6 +4,7 @@ import time
 from machine import ADC, Pin, Timer
 import time
 import uasyncio as asyncio
+#import micropython
 class TrackDriving:
     def __init__(self,):
         self.adcM = ADC(Pin(26))
@@ -28,12 +29,14 @@ class TrackDriving:
         self.turncallL=DifferentialDrive(self.left, self.right, self.stepmode, self.microsteps_per_step, self.pwm_pct,"l", self.turnmode, self.frequency)
         self.straightcall=DifferentialDrive(self.left, self.right, self.stepmode, self.microsteps_per_step, self.pwm_pct, "N/A", self.turnmode, self.frequency)
 
-        #reading_timer = Timer()
-        #reading_timer.init(period=250, mode=Timer.PERIODIC, callback=ReadVoltage)
+#        reading_timer = Timer()
+#        reading_timer.init(period=250, mode=Timer.PERIODIC, callback=ReadVoltage)
+        self.voltageM = 0
+        self.voltageL = 0
 
         time.sleep(1)
 
-    @micropython.native
+#    @micropython.native
     def ReadVoltage(self):
 #        global voltageM
 #        global voltageL
@@ -69,13 +72,14 @@ class TrackDriving:
                 self.straightcall.move(self.dist_straight, "backward", self.delay_us, self.move_unit)
             end = time.ticks_ms()
             
-        print("loop time", time.ticks_diff(end,start))
+            print("loop time", time.ticks_diff(end,start))
+Drive = TrackDriving()
+Drive.runrobot()
 
-
-    #start = time.tick_ms()
-    #reading_timer.deinit()
-    #end = time.ticks_ms()
-    #print(time.ticks_diff(end, start))
+#start = time.tick_ms()
+#reading_timer.deinit()
+#end = time.ticks_ms()
+#print(time.ticks_diff(end, start))
 
 #start = TrackDriving()
 
