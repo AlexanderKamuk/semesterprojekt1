@@ -6,7 +6,7 @@ import time
 import uasyncio as asyncio
 #import micropython
 class TrackDriving:
-    def __init__(self,):
+    def __init__(self):
         self.adcM = ADC(Pin(26))
         self.adcL = ADC(Pin(27))
         #adc til nummer to er på pin 27
