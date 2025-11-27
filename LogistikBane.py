@@ -2,8 +2,8 @@ from LDR_Turn_ReactionClassV3 import TrackDriving
 from MagnetClass import Electromagnet 
 
 Drive = TrackDriving()
-#Drive.runrobot()
-
+#Drive.runrobot() to continously run (meant to Trackdriving)
+#Drive.singlecheck meant to run until stopped
 magnet = Electromagnet()
 #magnet.start()
 #magnet.stop()
@@ -12,7 +12,7 @@ magnet = Electromagnet()
 def nut1():
     global count
     Drive.singlecheck()
-    if voltageR >= ?:
+    if Drive.voltageR >= 1: #1 er bare for at have en værdi, værdien skal reelt være når læser sort, så når den er mindre en værdien hvid
         return # exit function early 
     #turn to spot
     Drive.rightturnrobot
@@ -21,12 +21,12 @@ def nut1():
     Drive.rightturnrobot
     count += 1
         
-def home1() 2: ? #return home
+def home1(): #return home
     global count
     Drive.singlecheck()
-    if voltageR < ?: return
-    if voltageM < ?: return
-    if voltageL < ?: return
+    if Drive.voltageR < 1: return
+    if Drive.voltageM < 1: return
+    if Drive.voltageL < 1: return
     magnet.stop()
     Drive.rightturnrobot
     Drive.rightturnrobot
@@ -36,7 +36,7 @@ def home1() 2: ? #return home
 def nut2():
     global count
     Drive.singlecheck()
-    if voltageL >= ? return
+    if Drive.voltageL >= 1: return
     Drive.leftturnrobot
     magnet.start
     Drive.leftturnrobot
@@ -45,9 +45,9 @@ def nut2():
 def home2():
     global count
     Drive.singlecheck()
-    if voltageR < ?: return
-    if voltageM < ?: return
-    if voltageL < ?: return
+    if Drive.voltageR < 1: return
+    if Drive.voltageM < 1: return
+    if Drive.voltageL < 1: return
     magnet.stop()
     Drive.leftturnrobot
     Drive.leftturnrobot
@@ -57,8 +57,8 @@ def home2():
 
 count = 1
 
-if voltageM or voltageL <?:
-    count +=1
+"""if voltageM or voltageL <?:
+    count +=1"""
 
 while True:    #state 1
     while count == 1:
@@ -82,5 +82,5 @@ while True:    #state 1
     while count == 5
 
     #state 6
-    while count == 5
+    while count == 5"""
 
