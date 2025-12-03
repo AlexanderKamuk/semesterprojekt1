@@ -5,12 +5,12 @@ Generel:
 	- Påbegynd rapport
 
 Tracking:
-	- Analyze new LDR values
-	- Introduce curved movement
+	- Analyze new LDR values (done)
+	- Introduce curved movement (code made, awaiting test results)
 
 Logistics:
 	- Remake electromagnet
-	- Make PCB for electromagnet
-	- Solder 5-LDR-PCB
-	- Make linear actuator
-	- Make state machine for path planning
+	- Make PCB for electromagnet (designed, awaiting print)
+	- Solder 5-LDR-PCB (in progress)
+	- Make linear actuator (in progress)
+	- Make state machine for path planning (paused until hardware is produced)
