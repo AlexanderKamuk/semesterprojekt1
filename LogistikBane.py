@@ -18,9 +18,9 @@ def nut1():
     Drive.rightturnrobot
     magnet.start()
     #turn front to start
-    Drive.rightturnrobot
+    Drive.rightturnrobot 
     count += 1
-        
+
 def home1(): #return home
     global count
     Drive.singlecheck()
@@ -52,13 +52,35 @@ def home2():
     Drive.leftturnrobot
     Drive.leftturnrobot
 
-#def nut3()
+def leftside():
+    global count
+    Drive.singlecheck()
+    if Drive.voltageL < 1: return
+    if Drive.voltageM < 1: return
+    if Drive.voltageR < 1: return
+    Drive.leftturnrobot
+    count += 1
+
+def nut3():    
+    Drive.singlecheck()
+    if Drive.voltageR >= 1: return
+    magnet.start()
+    Drive.rightturnrobot
+    Drive.rightturnrobot
+    leftsidenut += 1
+    count += 1
+
+def nut4():
+    Drive.singlecheck()
+    if Drive.voltageR < 1: 
+
+        magnet.start()
+        Drive.leftturnrobot
+        Drive.leftturnrobot
+        count += 1
 
 
 count = 1
-
-"""if voltageM or voltageL <?:
-    count +=1"""
 
 while True:    #state 1
     while count == 1:
@@ -77,10 +99,24 @@ while True:    #state 1
         home2()
     
     
-"""
+
     #state 5
-    while count == 5
+    while count == 5:
+        leftside()
 
     #state 6
-    while count == 5"""
-
+    while count == 5:
+        nut3()
+    
+    #state 7
+    while count == 7:
+        home1()
+    
+    #state 8
+    while count == 8:
+        leftside()
+    
+    #state 9
+    leftsidenut = 0
+    while count == 9:   
+        nut4()
