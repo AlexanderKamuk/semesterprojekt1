@@ -1,12 +1,21 @@
 from LDR_Turn_ReactionClassV3 import TrackDriving
 from MagnetClass import Electromagnet 
+from ServoMotor import ServoMotor
+import time
 
+#Initializations
 Drive = TrackDriving()
 #Drive.runrobot() to continously run (meant to Trackdriving)
 #Drive.singlecheck meant to run until stopped
 magnet = Electromagnet()
 #magnet.start()
 #magnet.stop()
+Actuator = ServoMotor()
+#Actuator.degservo0()
+#Actuator.degservo90()
+#Actuator.degservo180()
+
+
 
 #States
 def nut1():
@@ -17,6 +26,10 @@ def nut1():
     #turn to spot
     Drive.rightturnrobot
     magnet.start()
+    Actuator.degservo180()
+    time.sleep(1)
+    Actuator.degservo0()
+    magnet.stop()
     #turn front to start
     Drive.rightturnrobot 
     count += 1
@@ -27,7 +40,6 @@ def home1(): #return home
     if Drive.voltageR < 1: return
     if Drive.voltageM < 1: return
     if Drive.voltageL < 1: return
-    magnet.stop()
     Drive.rightturnrobot
     Drive.rightturnrobot
     count += 1
@@ -66,18 +78,10 @@ def nut3():
     if Drive.voltageR >= 1: return
     magnet.start()
     Drive.rightturnrobot
-    Drive.rightturnrobot
-    leftsidenut += 1
+
+    Drive.leftturnrobot
+
     count += 1
-
-def nut4():
-    Drive.singlecheck()
-    if Drive.voltageR < 1: 
-
-        magnet.start()
-        Drive.leftturnrobot
-        Drive.leftturnrobot
-        count += 1
 
 
 count = 1
