@@ -6,11 +6,11 @@ Generel:
 
 Tracking:
 	- Analyze new LDR values (done)
-	- Introduce curved movement (code made, awaiting test results)
+	- Introduce curved movement (test results in; needs work)
 
 Logistics:
 	- Remake electromagnet
 	- Make PCB for electromagnet (designed, awaiting print)
-	- Solder 5-LDR-PCB (in progress)
-	- Make linear actuator (in progress)
+	- Solder 5-LDR-PCB (soldered, short circuited, needs rewiring)
+	- Make linear actuator (designed, awaiting available printer)
 	- Make state machine for path planning (paused until hardware is produced)
