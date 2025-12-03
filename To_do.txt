@@ -1,0 +1,16 @@
+To do:
+
+Generel:
+	- 3D-print improved LDR-box
+	- Påbegynd rapport
+
+Tracking:
+	- Analyze new LDR values
+	- Introduce curved movement
+
+Logistics:
+	- Remake electromagnet
+	- Make PCB for electromagnet
+	- Solder 5-LDR-PCB
+	- Make linear actuator
+	- Make state machine for path planning
