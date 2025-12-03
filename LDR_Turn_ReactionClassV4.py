@@ -9,10 +9,21 @@ import micropython
 #can use curve
 
 class TrackDriving:
-    def __init__(self):
+    def __init__(self, test=False):
+        # Define threshold LDR values depending on situation
+        if test == True: # For testing and debugging
+            self.thresholdM = 0.9
+            self.thresholdL = 1
+            self.thresholdR = 0.9
+        else: # For use on track
+            self.thresholdM = 0.4
+            self.thresholdL = 0.8
+            self.thresholdR = 0.3
+        
         # LDR inputs
         self.adcM = ADC(Pin(26))
         self.adcL = ADC(Pin(27))
+        self.adcR = ADC(Pin(28))
         # adc til nummer to er på pin 27
 
         # Motor pins
@@ -30,7 +41,7 @@ class TrackDriving:
         self.dist_turn = 5
         self.dist_straight = 1
         self.direction = "forward"
-        self.delay_us = 0          # Delay will be regulated through fuzzy logic
+        self.delay_us = 1500          # Delay will be regulated through fuzzy logic
         self.move_unit = "dist"
 
         # fuzzy / speed control settings 
@@ -41,8 +52,8 @@ class TrackDriving:
         # Delay range in microseconds.
         # Small error -> should be fast (delay near min_delay_us)
         # Big error   -> should be slower (delay near max_delay_us)
-        self.min_delay_us = 0       # fastest
-        self.max_delay_us = 1000    # slowest
+        self.min_delay_us = 1500       # fastest
+        self.max_delay_us = 2250    # slowest
 
         # Toggle for fuzzy logic (True = use fuzzy, False = constant speed)
         self.use_fuzzy_speed = True
@@ -86,6 +97,7 @@ class TrackDriving:
         # Sensor voltage storage
         self.voltageM = 0.0
         self.voltageL = 0.0
+        self.voltageR = 0.0
 
     def enable_fuzzy_speed(self):
         """Use fuzzy logic speed control."""
@@ -106,11 +118,13 @@ class TrackDriving:
         """
         raw_valueM = self.adcM.read_u16()
         raw_valueL = self.adcL.read_u16()
+        raw_valueR = self.adcR.read_u16()
         self.voltageM = raw_valueM * 3.3 / 65535
         self.voltageL = raw_valueL * 3.3 / 65535
+        self.voltageR = raw_valueR * 3.3 / 65535
         # print("L:", self.voltageL, "                     ", "M:", self.voltageM)
 
-    @micropython.native
+    #@micropython.native
     def chooseAction(self):
         """
         Decide which action the robot should take AND update delay_us using a simple rule.
@@ -126,7 +140,7 @@ class TrackDriving:
             # Use the difference between the two LDRs as an "error":
             # If the sensors see very different brightness -> big error -> move slower
             # If they are almost equal -> small error -> move faster
-            abs_diff = abs(self.voltageM - self.voltageL)
+            abs_diff = abs(self.voltageR - self.voltageL)
 
             # Limit and normalize to [0, 1]
             max_d = self.fuzzy_diff_max
@@ -151,9 +165,9 @@ class TrackDriving:
 
         # 2) BOOLEAN LOGIC – determine general action
         # Decide action (right, left, straight) based on LDR reading
-        if self.voltageM > 1.2 and self.voltageL > 0.7:
+        if self.voltageL > self.thresholdL and self.voltageM > self.thresholdM and self.voltageR < self.thresholdR:
             return 1  # Turn right
-        elif self.voltageM < 1.5 and self.voltageL < 0.7:
+        elif self.voltageL < self.thresholdL and self.voltageM > self.thresholdM and self.voltageR > self.thresholdR:
             return 2  # Turn left
         else:
             return 3  # Drive straight
@@ -183,7 +197,7 @@ class TrackDriving:
                 self.straightcall.move(
                     self.dist_straight, "backward", self.delay_us, self.move_unit
                 )
-
+test=True # Input this variable in TrackDriving() to enable debugging LDR-values
 # Create and run
 Drive = TrackDriving()
 Drive.runrobot()
