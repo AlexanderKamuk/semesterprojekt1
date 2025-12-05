@@ -1,7 +1,7 @@
 To do:
 
 Generel:
-	- 3D-print improved LDR-box
+	- 3D-print improved LDR-box (Designed along with connectors and top shielding, needs printing)
 	- Påbegynd rapport
 
 Tracking:
