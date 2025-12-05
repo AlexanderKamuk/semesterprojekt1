@@ -12,5 +12,5 @@ Logistics:
 	- Remake electromagnet
 	- Make PCB for electromagnet (designed, awaiting print)
 	- Solder 5-LDR-PCB (soldered, short circuited, needs rewiring)
-	- Make linear actuator (designed, awaiting available printer)
+	- Make linear actuator (printed, awaiting assembly)
 	- Make state machine for path planning (paused until hardware is produced)
