@@ -394,4 +394,3 @@ class StepperMotor:
         # Apply the PWM values to each pin for the current step
         for pin in range(len(self.pins)):
             self.pins[pin].duty_u16(step[pin])
-    
