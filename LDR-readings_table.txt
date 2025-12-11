@@ -6,5 +6,5 @@ b: <0.7				b: <0.4				b: <0.3
 
 Test LDR-readings:
 pin 26 - left			pin 27 - middle			pin 28 - right
-w: >1				w: >0.9				w: >0.9
-b: <1				b: <0.9				b: <0.9
+w: >1				w: >0.8				w: >0.8
+b: <1				b: <0.8				b: <0.8
