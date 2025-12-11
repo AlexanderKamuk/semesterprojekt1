@@ -1,30 +1,25 @@
-from StepperMotorDiff import StepperMotorDiff
 from DifferentialDrive import DifferentialDrive
-from machine import ADC, Pin, Timer
-import time
-import uasyncio as asyncio
-import micropython   
-# has new speed  things in it (The robot now automatically changes its
-# movement speed depending on how “wrong” the LDR readings are, instead of using a fixed speed.)
-#can use curve
+from machine import ADC, Pin
+import micropython
+
 
 class TrackDriving:
-    def __init__(self, test=False):
+    def __init__(self, test: bool = False):
         # Define threshold LDR values depending on situation
-        if test == True: # For testing and debugging
-            self.thresholdM = 0.8
-            self.thresholdL = 1
-            self.thresholdR = 0.8
-        else: # For use on track
+        if test is True:  # For testing and debugging
+            self.thresholdM = 0.9
+            self.thresholdL = 1.0
+            self.thresholdR = 0.9
+        else:  # For use on track
             self.thresholdM = 0.4
             self.thresholdL = 0.8
             self.thresholdR = 0.3
-        
+
         # LDR inputs
         self.adcM = ADC(Pin(26))
         self.adcL = ADC(Pin(27))
         self.adcR = ADC(Pin(28))
-        # adc til nummer to er på pin 27
+        # adc til nummer to er på pin 27 og 28
 
         # Motor pins
         self.left = [0, 1, 2, 3]
@@ -34,30 +29,17 @@ class TrackDriving:
         self.stepmode = "MICRO"
         self.microsteps_per_step = 4
         self.pwm_pct = 20
-        self.turnmode = "diff"
+        self.turnmode = "diff"   # can be set to "curve" if you want forward+turn
         self.frequency = 40_000
 
-        # Movement specific parameters 
+        # Movement specific parameters
         self.dist_turn = 5
         self.dist_straight = 1
         self.direction = "forward"
-        self.delay_us = 1500          # Delay will be regulated through fuzzy logic
+        # Simple constant speed (delay between steps in microseconds)
+        # smaller = faster, larger = slower
+        self.delay_us = 1500
         self.move_unit = "dist"
-
-        # fuzzy / speed control settings 
-        # Max absolute voltage difference between M and L that we care about
-        # (used for normalizing into a 0–1 "error" value)
-        self.fuzzy_diff_max = 1.5
-
-        # Delay range in microseconds.
-        # Small error -> should be fast (delay near min_delay_us)
-        # Big error   -> should be slower (delay near max_delay_us)
-        self.min_delay_us = 1500       # fastest
-        self.max_delay_us = 2250    # slowest
-
-        # Toggle for fuzzy logic (True = use fuzzy, False = constant speed)
-        self.use_fuzzy_speed = True
-        self.constant_delay_us = 500    # used when fuzzy is disabled
 
         # Setup of call from DifferentialDrive class
         # Right turn
@@ -99,89 +81,47 @@ class TrackDriving:
         self.voltageL = 0.0
         self.voltageR = 0.0
 
-    def enable_fuzzy_speed(self):
-        """Use fuzzy logic speed control."""
-        self.use_fuzzy_speed = True
-
-    def disable_fuzzy_speed(self, constant_delay_us=None):
-        """
-        Turn off fuzzy logic and use a constant delay_us instead.
-        If constant_delay_us is given, update the stored constant speed.
-        """
-        self.use_fuzzy_speed = False
-        if constant_delay_us is not None:
-            self.constant_delay_us = constant_delay_us
-
     def ReadVoltage(self):
-        """
-        Read raw values and convert them to voltages for middle (M) and left (L) LDR sensors.
-        """
+        """Read raw values and convert them to voltages for M, L and R LDR sensors."""
         raw_valueM = self.adcM.read_u16()
         raw_valueL = self.adcL.read_u16()
         raw_valueR = self.adcR.read_u16()
         self.voltageM = raw_valueM * 3.3 / 65535
         self.voltageL = raw_valueL * 3.3 / 65535
         self.voltageR = raw_valueR * 3.3 / 65535
-        # print("L:", self.voltageL, "                     ", "M:", self.voltageM)
+        # print("L:", self.voltageL, " M:", self.voltageM, " R:", self.voltageR)
 
-    #@micropython.native
+    @micropython.native
     def chooseAction(self):
-        """
-        Decide which action the robot should take AND update delay_us using a simple rule.
+        """Decide which action the robot should take.
 
         Returns:
             1: Turn right
             2: Turn left
-            3: Drive straight 
+            3: Drive straight
         """
 
-        # 1) SPEED PART
-        if self.use_fuzzy_speed:
-            # Use the difference between the two LDRs as an "error":
-            # If the sensors see very different brightness -> big error -> move slower
-            # If they are almost equal -> small error -> move faster
-            abs_diff = abs(self.voltageR - self.voltageL)
-
-            # Limit and normalize to [0, 1]
-            max_d = self.fuzzy_diff_max
-            if abs_diff >= max_d:
-                norm_err = 1.0
-            else:
-                norm_err = abs_diff / max_d
-
-            # Small error (norm_err ~ 0) -> delay close to min_delay_us (fast)
-            # Big   error (norm_err ~ 1) -> delay close to max_delay_us (slow)
-            span = self.max_delay_us - self.min_delay_us
-            self.delay_us = int(self.min_delay_us + norm_err * span)
-        else:
-            # Fuzzy disabled: use constant speed
-            self.delay_us = self.constant_delay_us
-
-        # Safety: in case someone configured max < min by mistake
-        if self.delay_us < self.min_delay_us:
-            self.delay_us = self.min_delay_us
-        elif self.delay_us > self.max_delay_us:
-            self.delay_us = self.max_delay_us
-
-        # 2) BOOLEAN LOGIC – determine general action
-        # Decide action (right, left, straight) based on LDR reading
-        if self.voltageL > self.thresholdL and self.voltageM > self.thresholdM and self.voltageR < self.thresholdR:
+        # Decide action (right, left, straight) based on LDR readings and thresholds
+        if (
+            self.voltageL > self.thresholdL
+            and self.voltageM > self.thresholdM
+            and self.voltageR < self.thresholdR
+        ):
             return 1  # Turn right
-        elif self.voltageL < self.thresholdL and self.voltageM > self.thresholdM and self.voltageR > self.thresholdR:
+        elif (
+            self.voltageL < self.thresholdL
+            and self.voltageM > self.thresholdM
+            and self.voltageR > self.thresholdR
+        ):
             return 2  # Turn left
         else:
             return 3  # Drive straight
 
     def runrobot(self):
-        """
-        Main control loop: read sensors, compute speed + action, and move the robot.
-        """
+        """Main control loop: read sensors, compute action, and move the robot."""
         while True:
             self.ReadVoltage()  # Read LDR sensors
 
-            # chooseAction():
-            # - updates self.delay_us (speed)
-            # - returns which manoeuvre to perform (1/2/3)
             action = self.chooseAction()
 
             # Act out the earlier determined action
@@ -197,7 +137,8 @@ class TrackDriving:
                 self.straightcall.move(
                     self.dist_straight, "backward", self.delay_us, self.move_unit
                 )
-test=True # Input this variable in TrackDriving() to enable debugging LDR-values
+
+
 # Create and run
 Drive = TrackDriving()
 Drive.runrobot()
