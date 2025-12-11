@@ -1,0 +1,3 @@
+længde=n*158cm+70cm
+n=23
+længde=3704cm
