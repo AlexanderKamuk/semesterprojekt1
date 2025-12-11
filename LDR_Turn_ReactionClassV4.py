@@ -12,9 +12,9 @@ class TrackDriving:
     def __init__(self, test=False):
         # Define threshold LDR values depending on situation
         if test == True: # For testing and debugging
-            self.thresholdM = 0.9
+            self.thresholdM = 0.8
             self.thresholdL = 1
-            self.thresholdR = 0.9
+            self.thresholdR = 0.8
         else: # For use on track
             self.thresholdM = 0.4
             self.thresholdL = 0.8
