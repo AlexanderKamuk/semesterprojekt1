@@ -1,5 +1,5 @@
 # file name: differential_drive_pcb
-from StepperClass import StepperMotor
+from StepperClassNewTest import StepperMotor
 import math
 
 
@@ -31,7 +31,7 @@ class DifferentialDrive:
 
         # Generate pin list
         if turn_mode == "single":
-            # Original single-wheel behaviour (unchanged if we need it)
+            # Original single-wheel behaviour
             if turn == "l":
                 pins = [16, 17, 18, 19] + right  # LEDs + right wheel
             else:
