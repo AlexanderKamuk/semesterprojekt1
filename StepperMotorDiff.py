@@ -1,29 +1,22 @@
 from machine import Pin, PWM
 import time
+import uasyncio as asyncio
 
-step = 0
-
-class StepperMotor:
-    def __init__(self, pins, step_mode="MICRO", pwm_pct=15, frequency=18_000,
-                 micro_steps=1, steps_per_rev=200, curve=False, curve_intensity=1.0):
+class StepperMotorDiff:
+    def __init__(self, pins, step_mode="MICRO", pwm_pct=15, frequency=18_000, micro_steps=1):
         """
-        ...
-        :param curve: Enable special curve micro-stepping pattern (for differential drive).
-        :param curve_intensity: 0.0 = no curve (straight), 1.0 = full curve pattern.
+        Initialize the stepper motor with given pins, PWM frequency, step mode, and steps per revolution.
+        
+        :param pins: List of GPIO pin numbers connected to the motor driver.
+        :param step_mode: The stepping mode for the motor ("FULL", "HALF", or "MICRO").
+        :param pwm_pct: PWM percentage for each motor coil (0 to 100).
+        :param frequency: Frequency for the PWM signals in Hz.
+        :param micro_steps: Number of micro-steps per full step (used in micro-stepping mode).
+        :param [TODO: Implement RPM] steps_per_rev: Number of steps required for one full revolution (default is 200).
         """
 
         # Initialize PWM for each pin
         self.pins = [PWM(Pin(pin)) for pin in pins]
-        
-        # Curve parameters
-        self.curve = curve
-        # Clamp to [0.0, 1.0]
-        if curve_intensity < 0.0:
-            curve_intensity = 0.0
-        elif curve_intensity > 1.0:
-            curve_intensity = 1.0
-        self.curve_intensity = curve_intensity
-        
 
         # Set the PWM frequency for all pins
         self.set_frequency(frequency)
@@ -32,7 +25,7 @@ class StepperMotor:
         self.pwm_max = 65535
         self.pwm_val = int(self.pwm_max * pwm_pct / 100)
         self.micro_steps = micro_steps
-        self.step_mode = step_mode.upper()  # Ensure uppercase letters
+        self.step_mode = step_mode.upper() # Ensure that is it uppercase letters
         
         # Initialize step counter to track the total number of step sequences
         self.step_counter = 0
@@ -63,14 +56,14 @@ class StepperMotor:
             self.step_sequence = self.generate_micro_step_sequence(self.pwm_val, self.micro_steps)
         else:
             # Invalid step mode handling
-            self.stop_sequence = [0, 0, 0, 0, 0, 0, 0, 0]
+            self.stop_sequence = [0, 0, 0, 0]
             raise ValueError("Invalid step mode! Use 'FULL', 'HALF', or 'MICRO'.")
         
         # Print the step sequence for debugging purposes
         self.print_step_sequence()
         
         # Sequence to stop the motor (no current in coils)
-        self.stop_sequence = [0, 0, 0, 0, 0, 0, 0, 0]
+        self.stop_sequence = [0, 0, 0, 0]
         self._running = False
 
     def generate_micro_step_sequence(self, pwm_val, micro_steps):
@@ -86,69 +79,29 @@ class StepperMotor:
         step_sequence = []
 
         # Generate the step sequence for each phase
+        # Phase 1: PWM on first pin, decreasing; PWM on second pin, increasing
+        for i in range(micro_steps):
+            pwm_1 = pwm_val - i * micro_step_size
+            pwm_2 = i * micro_step_size
+            step_sequence.append([pwm_1, pwm_2, 0, 0])
 
-        if self.curve == True:  # skip a few steps on one wheel
-            # Phase 1
-            for i in range(micro_steps // 2):
-                pwm_1 = pwm_val - i * micro_step_size
-                pwm_2 = i * micro_step_size
-                pwm_12 = pwm_val - (i + 1) * micro_step_size
-                pwm_22 = (i + 1) * micro_step_size
-                step_sequence.append([pwm_1, pwm_2, 0, 0, 0, 0, 0, 0])
-                step_sequence.append([pwm_12, pwm_22, 0, 0, pwm_1, pwm_2, 0, 0])
-            
-            # Phase 2
-            for i in range(micro_steps // 2):
-                pwm_2 = pwm_val - i * micro_step_size
-                pwm_3 = i * micro_step_size
-                pwm_22 = pwm_val - (i + 1) * micro_step_size
-                pwm_32 = (i + 1) * micro_step_size
-                step_sequence.append([0, pwm_2, pwm_3, 0, 0, 0, 0, 0])
-                step_sequence.append([0, pwm_22, pwm_32, 0, 0, pwm_2, pwm_3, 0])
+        # Phase 2: PWM on second pin, decreasing; PWM on third pin, increasing
+        for i in range(micro_steps):
+            pwm_2 = pwm_val - i * micro_step_size
+            pwm_3 = i * micro_step_size
+            step_sequence.append([0, pwm_2, pwm_3, 0])
 
-            # Phase 3
-            for i in range(micro_steps // 2):
-                pwm_3 = pwm_val - i * micro_step_size
-                pwm_4 = i * micro_step_size
-                pwm_32 = pwm_val - (i + 1) * micro_step_size
-                pwm_42 = (i + 1) * micro_step_size
-                step_sequence.append([0, 0, pwm_3, pwm_4, 0, 0, 0, 0])
-                step_sequence.append([0, 0, pwm_32, pwm_42, 0, 0, pwm_3, pwm_4])
+        # Phase 3: PWM on third pin, decreasing; PWM on fourth pin, increasing
+        for i in range(micro_steps):
+            pwm_3 = pwm_val - i * micro_step_size
+            pwm_4 = i * micro_step_size
+            step_sequence.append([0, 0, pwm_3, pwm_4])
 
-            # Phase 4
-            for i in range(micro_steps // 2):
-                pwm_4 = pwm_val - i * micro_step_size
-                pwm_1 = i * micro_step_size
-                pwm_42 = pwm_val - (i + 1) * micro_step_size
-                pwm_12 = (i + 1) * micro_step_size
-                step_sequence.append([pwm_1, 0, 0, pwm_4, 0, 0, 0, 0])
-                step_sequence.append([pwm_12, 0, 0, pwm_42, pwm_1, 0, 0, pwm_4])
-        
-        else:
-            # Defaults to non-curve driving (both motors same pattern)
-            # Phase 1
-            for i in range(micro_steps):
-                pwm_1 = pwm_val - i * micro_step_size
-                pwm_2 = i * micro_step_size
-                step_sequence.append([pwm_1, pwm_2, 0, 0, pwm_1, pwm_2, 0, 0])
-
-            # Phase 2
-            for i in range(micro_steps):
-                pwm_2 = pwm_val - i * micro_step_size
-                pwm_3 = i * micro_step_size
-                step_sequence.append([0, pwm_2, pwm_3, 0, 0, pwm_2, pwm_3, 0])
-
-            # Phase 3
-            for i in range(micro_steps):
-                pwm_3 = pwm_val - i * micro_step_size
-                pwm_4 = i * micro_step_size
-                step_sequence.append([0, 0, pwm_3, pwm_4, 0, 0, pwm_3, pwm_4])
-
-            # Phase 4
-            for i in range(micro_steps):
-                pwm_4 = pwm_val - i * micro_step_size
-                pwm_1 = i * micro_step_size
-                step_sequence.append([pwm_1, 0, 0, pwm_4, pwm_1, 0, 0, pwm_4])
+        # Phase 4: PWM on fourth pin, decreasing; PWM on first pin, increasing
+        for i in range(micro_steps):
+            pwm_4 = pwm_val - i * micro_step_size
+            pwm_1 = i * micro_step_size
+            step_sequence.append([pwm_1, 0, 0, pwm_4])
 
         return step_sequence
 
@@ -162,7 +115,7 @@ class StepperMotor:
         for pin in self.pins:
             pin.freq(frequency)
     
-    def move_stepper(self, steps, direction, delay_us=1000):
+    async def move_stepper(self, steps, direction, delay_us=1000):
         """
         Move the stepper motor a specified number of steps.
  
@@ -170,6 +123,19 @@ class StepperMotor:
         :param direction: Direction to move. "forward" for forward, "backward" for backward.
         :param delay_us: Delay between steps in microseconds.
         """
+        # Define local variable to keep track of steps
+        step=0
+        
+        # Redetermine direction based on step value
+        if steps < 0:
+            steps = abs(steps)
+            if direction == "forward":
+                direction="backward"
+            else:
+                direction="forward"
+        else:
+            steps=steps
+        
         # Determine direction of movement
         if direction == "forward":
             direction_step = 1
@@ -177,17 +143,14 @@ class StepperMotor:
             direction_step = -1
         else:
             raise ValueError("Direction must be 'forward' or 'backward'")
-    
-        # Move the motor step by step
-        steps = abs(steps)
         
         for _ in range(steps):
-            global step
             step = step % len(self.step_sequence)
             self.set_step(self.step_sequence[step])
             time.sleep_us(delay_us)  # Use microsecond delay
             step = step + direction_step
             self.step_counter += direction_step
+            await asyncio.sleep(0.00000000000001)
         
         self.stop()  # Stop the motor after completing the steps
 
@@ -216,24 +179,25 @@ class StepperMotor:
         # Ramp-up phase
         for i in range(ramp_steps):
             delay_us = initial_delay_us - i * delay_increment
-            for step_idx in range(len(self.step_sequence))[::direction_step]:
-                self.set_step(self.step_sequence[step_idx])
+            for step in range(len(self.step_sequence))[::direction_step]:
+                self.set_step(self.step_sequence[step])
                 time.sleep_us(int(delay_us))  # Apply delay and cast to int
     
         # Full-speed phase
         for _ in range(steps - 2 * ramp_steps):
-            for step_idx in range(len(self.step_sequence))[::direction_step]:
-                self.set_step(self.step_sequence[step_idx])
+            for step in range(len(self.step_sequence))[::direction_step]:
+                self.set_step(self.step_sequence[step])
                 time.sleep_us(final_delay_us)  # Apply full-speed delay
     
         # Ramp-down phase
         for i in range(ramp_steps):
             delay_us = final_delay_us + i * delay_increment
-            for step_idx in range(len(self.step_sequence))[::direction_step]:
-                self.set_step(self.step_sequence[step_idx])
+            for step in range(len(self.step_sequence))[::direction_step]:
+                self.set_step(self.step_sequence[step])
                 time.sleep_us(int(delay_us))  # Apply delay and cast to int
     
         self.stop()  # Stop the motor after completing the steps
+
 
     def ramp_up(self, steps, direction, initial_delay_us=2000, final_delay_us=1000, ramp_steps=10):
         """
@@ -259,23 +223,24 @@ class StepperMotor:
         # Ramp-up phase
         for i in range(ramp_steps):
             delay_us = initial_delay_us - i * delay_increment
-            for step_idx in range(len(self.step_sequence))[::direction_step]:
-                self.set_step(self.step_sequence[step_idx])
+            for step in range(len(self.step_sequence))[::direction_step]:
+                self.set_step(self.step_sequence[step])
                 time.sleep_us(int(delay_us))  # Apply delay and cast to int
 
         # Steady-speed phase
         remaining_steps = steps - ramp_steps
         for _ in range(remaining_steps):
-            for step_idx in range(len(self.step_sequence))[::direction_step]:
-                self.set_step(self.step_sequence[step_idx])
+            for step in range(len(self.step_sequence))[::direction_step]:
+                self.set_step(self.step_sequence[step])
                 time.sleep_us(final_delay_us)  # Continue with final steady speed delay
 
-        # Stop the motor after completing all steps
+        # Stop the motor after completing all steps, 
+        # in case that no command is followed by this 
         self.stop()
 
     def ramp_down(self, steps, direction, initial_delay_us=2000, final_delay_us=1000, ramp_steps=10):
         """
-        Move the stepper motor with a speed ramp-down over a specified number of steps.
+        Move the stepper motor with a speed ramp-up over a specified number of steps.
         
         :param steps: Number of steps to move.
         :param direction: Direction to move. "forward" for forward, "backward" for backward.
@@ -291,21 +256,21 @@ class StepperMotor:
         else:
             raise ValueError("Direction must be 'forward' or 'backward'")
         
-        # Move the motor step by step with ramping down speed
+        # Move the motor step by step with ramping up speed
         steps = abs(steps)
         delay_increment = (initial_delay_us - final_delay_us) / ramp_steps  # Calculate delay decrement per ramp step
     
         # Full-speed phase
         for _ in range(steps - ramp_steps):
-            for step_idx in range(len(self.step_sequence))[::direction_step]:
-                self.set_step(self.step_sequence[step_idx])
+            for step in range(len(self.step_sequence))[::direction_step]:
+                self.set_step(self.step_sequence[step])
                 time.sleep_us(final_delay_us)  # Apply full-speed delay
     
         # Ramp-down phase
         for i in range(ramp_steps):
             delay_us = final_delay_us + i * delay_increment
-            for step_idx in range(len(self.step_sequence))[::direction_step]:
-                self.set_step(self.step_sequence[step_idx])
+            for step in range(len(self.step_sequence))[::direction_step]:
+                self.set_step(self.step_sequence[step])
                 time.sleep_us(int(delay_us))  # Apply delay and cast to int
     
         self.stop()  # Stop the motor after completing the steps
@@ -314,12 +279,14 @@ class StepperMotor:
         """
         Print the current step sequence in a structured way.
         """
+
+        # Print each step in the step sequence for debugging / validation
         print("--- Step Sequence ---")
-        for idx, step_values in enumerate(self.step_sequence):
-            print(f"Step {idx + 1}: {step_values}")
+        for idx, step in enumerate(self.step_sequence):
+            print(f"Step {idx + 1}: {step}")
         print("-----    End    -----")
 
-    def run_continuously(self, direction, delay_us=1000):
+    async def run_continuously(self, direction, delay_us=1000):
         """
         Run the stepper motor continuously in the specified direction.
         
@@ -334,14 +301,15 @@ class StepperMotor:
         else:
             raise ValueError("Direction must be 'forward' or 'backward'")
         
+        # Run the motor until stopped
         self._running = True
-        global step
-        step = step % len(self.step_sequence)
-
+        
         while self._running:
-            self.set_step(self.step_sequence[step])
-            time.sleep_us(delay_us)  # Use microsecond delay
-            step = (step + direction_step) % len(self.step_sequence)
+            for step in range(len(self.step_sequence))[::direction_step]:
+                self.set_step(self.step_sequence[step])
+                time.sleep_us(delay_us)  # Use microsecond delay
+                await asyncio.sleep(0.00000000000001)
+            
             self.step_counter += direction_step
 
     def run_continuously_in_secs(self, direction, seconds, delay_us=1000):
@@ -363,14 +331,18 @@ class StepperMotor:
         start_time = time.time()  # Track the start time
         self._running = True
 
-        while time.time() - start_time < seconds and self._running:
-            for step_idx in range(len(self.step_sequence))[::direction_step]:
-                self.set_step(self.step_sequence[step_idx])
+        print(f"Running the motor for {seconds} seconds.")
+        
+        # Run the motor for the specified duration
+        while time.time() - start_time < seconds:
+            for step in range(len(self.step_sequence))[::direction_step]:
+                self.set_step(self.step_sequence[step])
                 time.sleep_us(delay_us)  # Use microsecond delay
             
             self.step_counter += direction_step
         
         self.stop_running()
+        print(f"Motor stopped after {seconds} seconds.")
 
     def stop_running(self):
         """
@@ -394,7 +366,3 @@ class StepperMotor:
         # Apply the PWM values to each pin for the current step
         for pin in range(len(self.pins)):
             self.pins[pin].duty_u16(step[pin])
-            
-            
-            
-           
