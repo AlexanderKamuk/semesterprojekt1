@@ -31,7 +31,7 @@ class DifferentialDrive:
 
         # Generate pin list
         if turn_mode == "single":
-            # Original single-wheel behaviour
+            # Original single-wheel behaviour (unchanged if we need it)
             if turn == "l":
                 pins = [16, 17, 18, 19] + right  # LEDs + right wheel
             else:
@@ -123,8 +123,14 @@ class DifferentialDrive:
             else:
                 steps = dist
 
+        # Ensure whole number of steps for the stepper
+        steps = int(steps)
+
         # Prepare delay for move_stepper
         delay = delay_us
         
         # Call moving function from stepper motor class
         self.stepping.move_stepper(steps, direction, delay)
+
+
+
