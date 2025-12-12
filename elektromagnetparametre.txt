@@ -1,3 +1,5 @@
 længde=n*158cm+70cm
 n=23
 længde=3704cm
+kernediameter_med_gevind=0,97cm
+kernediameter_uden_gevind=0,83cm
