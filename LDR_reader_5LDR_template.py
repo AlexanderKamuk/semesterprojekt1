@@ -11,7 +11,7 @@
             """
             
             # LDR activation pins
-            adc_activation_pins=[Pin(?,Pin.OUT),Pin(?,Pin.OUT),Pin(?,Pin.OUT)]
+            adc_activation_pins=[Pin(22,Pin.OUT),Pin(19,Pin.OUT),Pin(18,Pin.OUT)]
             
             # LDR activation sequence
             LDR_number=[
