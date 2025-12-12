@@ -9,3 +9,7 @@ vindinger:
 1111111111111111111111111111111111111111111111111111111111111111111111
 +2
 =702 vindinger
+
+
+Link til lommeregner:
+https://rechneronline.de/force/electromagnet.php
