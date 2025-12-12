@@ -1,7 +1,7 @@
 To do:
 
 Generel:
-	- 3D-print improved LDR-box (printing, awaiting results)
+	- 3D-print improved LDR-box (printed, needs testing)
 	- Påbegynd rapport (udkastsdokument oprettet, skal stadig skrives)
 
 Tracking:
@@ -9,7 +9,7 @@ Tracking:
 	- Introduce curved movement (test results in; needs work)
 
 Logistics:
-	- Remake electromagnet
+	- Remake electromagnet (Done)
 	- Make PCB for electromagnet (printed, soldered, awaiting review)
 	- Solder 5-LDR-PCB (reprinted, awaiting soldering)
 	- Make linear actuator (printed, awaiting assembly)

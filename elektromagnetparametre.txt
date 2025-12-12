@@ -3,3 +3,9 @@ n=23
 længde=3704cm
 kernediameter_med_gevind=0,97cm
 kernediameter_uden_gevind=0,83cm
+
+vindinger:
+1=10
+1111111111111111111111111111111111111111111111111111111111111111111111
++2
+=702 vindinger
