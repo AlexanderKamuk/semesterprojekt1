@@ -5,14 +5,14 @@ class Electromagnet:
         self.pwm.freq(8000) # pwm freq 8kHz
     #Start
     def start(self):
-        duty = int(65535*1) #max duty, duty can be between 0 and 100% (0<duty<1)
+        duty = int(65535*0.5) #50% duty, duty can be between 0 and 100% (0<duty<1)
         self.pwm.duty_u16(duty)
     def stop(self):
         self.pwm.duty_u16(0) #Min duty
 
-#magnet = Electromagnet()
+magnet = Electromagnet()
 #magnet.start()
-#magnet.stop()
+magnet.stop()
 
 
 
