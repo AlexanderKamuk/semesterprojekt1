@@ -10,7 +10,7 @@ Tracking:
 
 Logistics:
 	- Remake electromagnet (Done)
-	- Make PCB for electromagnet (done)
-	- Solder 5-LDR-PCB (soldered, needs more testing)
-	- Make linear actuator (reworked, needs printing)
+	- Make PCB for electromagnet (Done)
+	- Solder 5-LDR-PCB (soldered, needs troubleshooting)
+	- Make linear actuator (scrapped, new design under way)
 	- Make state machine for path planning (paused until hardware is produced)
