@@ -1,7 +1,7 @@
 Track LDR-readings:
 pin 26 - left			pin 27 - middle			pin 28 - right
-w: >0.7				w: >0.4				w: >0.3
-b: <0.7				b: <0.4				b: <0.3
+w: >0.5				w: >0.4				w: >0.25
+b: <0.5				b: <0.4				b: <0.25
 
 
 Test LDR-readings:
