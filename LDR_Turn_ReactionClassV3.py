@@ -90,7 +90,15 @@ class TrackDriving:
         self.voltageM = raw_valueM * 3.3 / 65535
         self.voltageL = raw_valueL * 3.3 / 65535
         #print("L:", self.voltageL, "                     ", "M:", self.voltageM) # print used during debugging
-
+    def rightturnrobot(self):
+        self.turncallR.move(
+            90, self.direction, self.delay_us, self.move_unit
+        )
+    def leftturnrobot(self):
+        self.turncallL.move(
+            90, self.direction, self.delay_us, self.move_unit
+        )
+    
     @micropython.native
     def chooseAction(self):
         """
@@ -132,6 +140,7 @@ class TrackDriving:
             self.delay_us = self.min_delay_us
         elif self.delay_us > self.max_delay_us:
             self.delay_us = self.max_delay_us
+    
 
          
         """
