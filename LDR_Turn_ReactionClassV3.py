@@ -90,13 +90,18 @@ class TrackDriving:
         self.voltageM = raw_valueM * 3.3 / 65535
         self.voltageL = raw_valueL * 3.3 / 65535
         #print("L:", self.voltageL, "                     ", "M:", self.voltageM) # print used during debugging
-    def rightturnrobot(self):
+    
+    def rightturnrobot(self): #90 degrees right turn
         self.turncallR.move(
             90, self.direction, self.delay_us, self.move_unit
         )
-    def leftturnrobot(self):
+    def leftturnrobot(self): #90 degrees left turn
         self.turncallL.move(
             90, self.direction, self.delay_us, self.move_unit
+        )
+    def straightrobot(self): #move straight
+        self.straightcall.move(
+            self.dist_straight, "backward", self.delay_us, self.move_unit
         )
     
     @micropython.native
