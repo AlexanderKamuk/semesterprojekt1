@@ -10,9 +10,9 @@ class Electromagnet:
     def stop(self):
         self.pwm.duty_u16(0) #Min duty
 
-magnet = Electromagnet()
+#magnet = Electromagnet()
 #magnet.start()
-magnet.stop()
+#magnet.stop()
 
 
 

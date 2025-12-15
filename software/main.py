@@ -138,5 +138,6 @@ while True:
     
     if count == 8:
         home2()
+    time.sleep(0.01) #to prevent CPU overload
         
     

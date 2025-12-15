@@ -10,7 +10,7 @@ class TrackDriving:
         # LDR inputs
         self.adc = ADC(Pin(27))
         
-        activationPins=[22,18,14]
+        activationPins=reversed([22,18,14])
         self.signalPins=[Pin(pin,Pin.OUT) for pin in activationPins]
         
         self.sequence=[
@@ -150,9 +150,9 @@ class TrackDriving:
         Determine general action
         """
         # Decide action (right, left, straight) based on LDR reading
-        if self.voltageM < 0.2 and self.voltageL1 > 0.2 and self.voltageR1 < 0.2: 
+        if self.voltageM < 0.2 and self.voltageL1 > 0.15 and self.voltageR1 < 0.32: 
             return 1  # Turn right
-        elif self.voltageM < 0.2 and self.voltageL1 < 0.2 and self.voltageR1 > 0.2:
+        elif self.voltageM < 0.2 and self.voltageL1 < 0.15 and self.voltageR1 > 0.32:
             return 2  # Turn left
         else:
             return 3  # Drive straight

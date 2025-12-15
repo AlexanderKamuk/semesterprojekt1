@@ -2,9 +2,9 @@
 from machine import ADC, Pin
 import time
 
-adc = ADC(Pin(26))
+adc = ADC(Pin(27))
 
-activationPins=[22,19,18]
+activationPins=reversed([22,18,14])
 signalPins=[Pin(pin,Pin.OUT) for pin in activationPins]
 
 sequence=[
