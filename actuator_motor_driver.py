@@ -19,27 +19,32 @@ freq=18_000
 microsteps=20
 
 # Distance to move
-dist=1600
+dist=12
 
 # Unit of dist ("steps", "cm" or "degree")
-unit="steps"
+unit="cm"
+
+# Gear diameter in cm
+gear_diameter=1.5
 
 if unit == "degree": # Convert from degrees to steps
-    dist=dist/1.8*microsteps
+    steps=dist/1.8*microsteps
 elif unit == "cm": # Convert from cm to steps
-    diameter=8.6*(1+0.0145)*(1+0.002) # Measured in cm, regulated through earlier testing in DifferentialDrive
-    circumference=math.pi*diameter
-    dist=circumference/360*dist*microsteps
+    circumference=math.pi*gear_diameter
+    steps=dist/(circumference/(200*microsteps))//2 - microsteps*2
+else: # Default to unit being steps
+    steps=dist
 
 # Direction of movement
-directionPos="forward"
-directionNeg="backward"
+directionPos="backward"
+directionNeg="forward"
 
 # Delay in us
 delay_us=1000
 
 # Initiate generel movement class
 motor=StepperMotor(pins, stepmode, pwm_pct, freq, microsteps)
+motor.stop()
 
 # Define signal pin
 signal=Pin("GP11", Pin.IN, Pin.PULL_DOWN)
@@ -50,7 +55,7 @@ mode_idx=0
 # Main loop
 while True:
     if signal.value() == 1: # Activate if signal pin is triggered
-        motor.move_stepper(dist,directionModes[mode_idx],delay_us) # Move actuator in given direction
+        motor.move_stepper(steps,directionModes[mode_idx],delay_us) # Move actuator in given direction
         print("moving "+directionModes[mode_idx]) # Print movement direction
         mode_idx=(mode_idx+1)%len(directionModes) # Switch movement direction
     else:
