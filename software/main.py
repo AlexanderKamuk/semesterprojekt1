@@ -1,7 +1,6 @@
 from LDRx5_turn_reactionV1 import TrackDriving
 from MagnetClass import Electromagnet 
 import time
-from machine import ADC, Pin
 #Initializations
 Drive = TrackDriving()
 #Drive.runrobot() to continously run (meant to Trackdriving)
@@ -34,7 +33,7 @@ def straightline():
 
     elif Drive.voltageL2 < 0.2: #Value for detecting Black
         time.sleep(0.05) #small debounce
-        elif Drive.voltageL2 < 0.2: #Value for detecting Black
+        if Drive.voltageL2 < 0.2: #Value for detecting Black
             Drive.leftturnrobot() # 90 degree turn to the left
             magnet.start()
             #needs the actuator to start here, so the nut can be picked up
