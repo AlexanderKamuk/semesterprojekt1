@@ -1,10 +1,11 @@
 from LDRx5_turn_reactionV1 import TrackDriving
 from MagnetClass import Electromagnet 
 import time
+from machine import Pin
 #Initializations
 Drive = TrackDriving()
-#Drive.runrobot() to continously run (meant to Trackdriving)
-#Drive.singlecheck meant to run until stopped
+#Drive.runrobot() to follow track
+
 magnet = Electromagnet()
 #magnet.start()
 #magnet.stop()
@@ -22,11 +23,11 @@ def straightline():
             Pin.toggle(pin_navn)
             time.sleep(0.01)
             Pin.toggle(pin_navn)
+            time.sleep(7) #wait time for roll out
             
-            #needs wait time
             #needs wiggle function
             
-            #actuator roll in
+            #Actuator - roll in
             Pin.toggle(pin_navn)
             time.sleep(0.01)
             Pin.toggle(pin_navn)
@@ -35,17 +36,16 @@ def straightline():
     elif Drive.voltageL2 < 0.2: #Value for detecting Black
         time.sleep(0.05) #small debounce
         if Drive.voltageL2 < 0.2: #Value for detecting Black
-            magnet.start
+            magnet.start()
             Drive.leftturnrobot() # 90 degree turn to the left
             #Actuator - roll out 
             Pin.toggle(pin_navn)
             time.sleep(0.01)
             Pin.toggle(pin_navn)
-            
-            #needs wait time
+            time.sleep(7)#wait time for roll out
             #needs wiggle function
             
-            #actuator roll in
+            #Actuator - roll in
             Pin.toggle(pin_navn)
             time.sleep(0.01)
             Pin.toggle(pin_navn)
@@ -53,6 +53,7 @@ def straightline():
             Drive.rightturnrobot() # 90 degree turn to the right to face the line again
             count += 1
 def straightline2(): #state to ignore left and right readings
+    global count
     Drive.runrobot() # keep moving forward
     if Drive.voltageR2 < 0.2 and Drive.voltageL2 < 0.2:
         count +=1 # move to next state
@@ -68,11 +69,13 @@ def home1(): #return home
         count += 1
 
 def line2():
+    global count
     Drive.runrobot()
     if Drive.voltageR2 < 0.2 and Drive.voltageL2 < 0.2:
         Drive.leftturnrobot()
         count += 1
 def line2pickup():
+    global count
     Drive.runrobot()
     if Drive.voltageR2 < 0.2:
         time.sleep(0.1)
@@ -84,16 +87,27 @@ def line2pickup():
             time.sleep(0.01)
             Pin.toggle(pin_navn)
             
-            #needs wait time
+            time.sleep(7) #wait time for roll out
             #needs wiggle function
             
-            #actuator roll in
+            #Actuator - roll in
             Pin.toggle(pin_navn)
             time.sleep(0.01)
             Pin.toggle(pin_navn)
             magnet.stop()
             Drive.leftturnrobot()
-            count += 1 #2 right sides, so in needs to run count += 1, 2 times before switching to new state
+            count += 1 #2 right side pick ups, so this code needs to run twice in a row
+            
+def home2():
+    global count
+    if Drive.voltageR1 < 0.2 and Drive.voltageR2 < 0.2 and Drive.voltageL2 < 0.2 and Drive.voltageL1 < 0.2:
+        Drive.leftturnrobot()
+        Drive.leftturnrobot()
+        Drive.runrobot()
+        if (Drive.voltageR1 < 0.2 and Drive.voltageR2 < 0.2 and Drive.voltageL2 < 0.2 and Drive.voltageL1 < 0.2 or
+        Drive.voltageR1 > 0.3 and Drive.voltageR2 > 0.3 and Drive.voltageL2 > 0.3 and Drive.voltageL1 > 0.3):
+            Drive.rightturnrobot()
+            Drive.runrobot()
             
 
 count = 1
@@ -115,4 +129,14 @@ while True:
     if count == 4:
         home1()
     
+    #turn left to line 2
+    if count == 5:
+        line2()
+
+    if count in (6, 7):
+        line2pickup()
+    
+    if count == 8:
+        home2()
+        
     

@@ -125,7 +125,15 @@ class TrackDriving:
         self.turncallL.move(
             90, self.direction, self.delay_us, self.move_unit
         )
+    def wiggle(self):
+        self.turncallR.move(15, self.direction, self.delay_us, self.move_unit)
+        
+        self.turncallL.move(15, self.direction, self.delay_us, self.move_unit)
     
+        self.turncallR.move(15, self.direction, self.delay_us, self.move_unit)
+        
+        self.turncallL.move(15, self.direction, self.delay_us, self.move_unit)
+        
     @micropython.native
     def chooseAction(self):
         """
@@ -177,9 +185,9 @@ class TrackDriving:
             # End of timer and print used for debugging
             #end = time.ticks_ms()
             #print("loop time", time.ticks_diff(end, start))
-
+"""
 Drive = TrackDriving()
 
 while True:
     Drive.runrobot()
-
+"""
