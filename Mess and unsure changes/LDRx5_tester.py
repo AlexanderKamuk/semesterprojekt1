@@ -1,9 +1,9 @@
 from machine import ADC, Pin
 import time
 
-adc = ADC(Pin(26))
+adc = ADC(Pin(27))
 
-activationPins=[22,19,18]
+activationPins=[22,18,14]
 signalPins=[Pin(pin,Pin.OUT) for pin in activationPins]
 
 sequence=[
@@ -38,13 +38,12 @@ def ReadVoltage():
     set_pins(sequence[4])
     raw_valueR2 = adc.read_u16()
     voltageR2 = raw_valueR2 * 3.3/65535
-    print(voltageR1)
-    #print([voltageL2,voltageL1,voltageM,voltageR1,voltageR2])
+    print([voltageL2,voltageL1,voltageM,voltageR1,voltageR2])
 
 
 while True:
     ReadVoltage()
-    time.sleep(0.1)
+    time.sleep(0.5)
 
 
 
