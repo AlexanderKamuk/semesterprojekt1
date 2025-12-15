@@ -1,0 +1,5 @@
+3 far right	: R2
+0 right		: R1
+1 middle	: M
+2 venstre	: L1
+4 radical left	: L2
