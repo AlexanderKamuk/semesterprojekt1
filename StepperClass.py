@@ -1,6 +1,5 @@
 from machine import Pin, PWM
 import time
-import uasyncio as asyncio
 step=0
 class StepperMotor:
     def __init__(self, pins, step_mode="MICRO", pwm_pct=15, frequency=18_000, micro_steps=1, steps_per_rev=200,curve=False):
@@ -344,24 +343,9 @@ class StepperMotor:
         for step in range(len(self.step_sequence))[::direction_step]:
             self.set_step(self.step_sequence[step])
             time.sleep_us(delay_us)  # Use microsecond delay
-            await asyncio.sleep(0.00000000000001)
             self.step_counter += direction_step
-        
-        """while self._running:
-            #global step
-            step = step % len(self.step_sequence)
-            self.set_step(self.step_sequence[step])
-            time.sleep_us(delay_us)  # Use microsecond delay
-            step = step + direction_step
-            await asyncio.sleep(0.00000000000001)
-            
-            for step in range(len(self.step_sequence))[::direction_step]:
-                self.set_step(self.step_sequence[step])
-                time.sleep_us(delay_us)  # Use microsecond delay
-            
-            self.step_counter += direction_step"""
 
-    async def run_continuously_in_secs(self, direction, seconds, delay_us=1000):
+    def run_continuously_in_secs(self, direction, seconds, delay_us=1000):
         """
         Run the stepper motor continuously in the specified direction for a set number of seconds.
         
