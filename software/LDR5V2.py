@@ -33,6 +33,10 @@ class TrackDriving:
         # Movement specific parameters 
         self.dist_turn = 1
         
+        # Thresholds
+        self.thresholdL = 0.1
+        self.thresholdM = 0.08
+        self.thresholdR = 0.08
         
         self.dist_straight = 0.5
         self.direction = "forward"
@@ -114,9 +118,9 @@ class TrackDriving:
             145, self.direction, self.delay_us, self.move_unit
             
         )
-    def _180(self):
+    def _190(self):
         self.turncallR.move(
-            180, self.direction, self.delay_us, self.move_unit
+            190, self.direction, self.delay_us, self.move_unit
         )
         
     def straight5cm(self):
@@ -183,9 +187,9 @@ class TrackDriving:
         Determine general action
         """
         # Decide action (right, left, straight) based on LDR reading
-        if  self.voltageL2 > 0.1 and self.voltageM < 0.1: 
+        if  self.voltageL2 > self.thresholdL and self.voltageM < self.thresholdR: 
             return 1  # Turn right
-        elif self.voltageL2 < 0.1 and self.voltageM > 0.1:
+        elif self.voltageL2 < self.thresholdL and self.voltageM > self.thresholdR:
             return 2  # Turn left
         else:
             return 3  # Drive straight

@@ -18,9 +18,8 @@ actuatorpin.value(0)
 thresholdL2= 0.1
 thresholdL1= 0.1
 thresholdM = 0.1
-thresholdR1= 0.1
-thresholdR2= 0.1
-
+thresholdR1= 0.15
+thresholdR2= 0.05
 #States
 def straightline():
     global count
@@ -62,7 +61,7 @@ def fullturn():
     global count
     Drive.runrobot()
     if Drive.voltageL2 < thresholdL2 and Drive.voltageL1 < thresholdL1 and Drive.voltageM < thresholdM:
-        Drive._180()
+        Drive._190()
         count += 1
     
     
