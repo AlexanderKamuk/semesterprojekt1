@@ -16,8 +16,9 @@ actuatorpin.value(0)
 
 #States
 def straightline():
-    global count 
-    Drive.runrobot() #start moving forward
+    global count
+    Drive.straight10cm() #start moving forward
+    Drive.wigglecheck()
     if Drive.voltageR2 <0.1: #Value for detecting Black
         time.sleep(0.5) #small debounce
         if Drive.voltageR2 < 0.1: #Value for detecting Black
@@ -37,15 +38,17 @@ def straightline():
             Pin.toggle(actuatorpin)
             time.sleep(0.01)
             Pin.toggle(actuatorpin)
-            time.sleep(7)
+            time.sleep(8)
             
             magnet.stop()
+            time.sleep(2)# wait time for the nut to fall into the box
             Drive.rightturnrobot() # 90 degree turn to the right to face the line again
             Drive.straight5cm()
+            Drive.straight10cm()
             
-    elif Drive.voltageL2 < 0.15: #Value for detecting Black
+    elif Drive.voltageL2 < 0.2: #Value for detecting Black
         time.sleep(0.5) #small debounce
-        if Drive.voltageL2 < 0.15: #Value for detecting Black
+        if Drive.voltageL2 < 0.2: #Value for detecting Black
             Drive.reverse5cm()
             Drive.rightturnrobot() # 90 degree turn to the right
             magnet.start()
@@ -62,17 +65,21 @@ def straightline():
             Pin.toggle(actuatorpin)
             time.sleep(0.01)
             Pin.toggle(actuatorpin)
-            time.sleep(7)
+            time.sleep(8)
             
             magnet.stop()
+            time.sleep(3)
             Drive.leftturnrobot() # 90 degree turn to the right to face the line again
+            Drive.straight5cm()
+            Drive.straight10cm()
+
             count += 1
             print("first state done")
             
 def straightline2(): #state to ignore left and right readings
     global count
     Drive.runrobot() # keep moving forward
-    if Drive.voltageR2 < 0.3 and Drive.voltageL2 < 0.3:
+    if Drive.voltageR2 < 0.1 and Drive.voltageL2 < 0.2:
         count +=1 # move to next state
         print("second state done")
         Drive.straight5cm
@@ -86,7 +93,7 @@ def home1line1(): #return home
     
 def home2line1():
     Drive.runrobot() #move forward
-    if Drive.voltageR1 < 0.2 and Drive.voltageM < 0.2 and Drive.voltageL1 < 0.2:
+    if Drive.voltageR1 < 0.4 and Drive.voltageM < 0.19 and Drive.voltageL1 < 0.22:
         time.sleep(2) #give time to fully reach home position
         Drive.rightturnrobot()
         Drive.rightturnrobot()

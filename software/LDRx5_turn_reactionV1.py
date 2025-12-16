@@ -105,17 +105,22 @@ class TrackDriving:
     
     def rightturnrobot(self): #90 degrees right turn
         self.turncallR.move(
-            125, self.direction, self.delay_us, self.move_unit
+            145, self.direction, self.delay_us, self.move_unit
         )
     def leftturnrobot(self): #90 degrees left turn
         self.turncallL.move(
-            125, self.direction, self.delay_us, self.move_unit
+            150, self.direction, self.delay_us, self.move_unit
             
         )
     def straight5cm(self):
         self.straightcall.move(
                 5, "backward", self.delay_us, self.move_unit
             )
+    def straight10cm(self):
+        self.straightcall.move(
+                10, "backward", self.delay_us, self.move_unit
+                )
+        
     def reverse5cm(self):
         self.straightcall.move(
                 5, "forward", self.delay_us, self.move_unit
@@ -123,9 +128,9 @@ class TrackDriving:
     
         
     def wiggle(self):
-        self.turncallR.move(15, self.direction, self.delay_us, self.move_unit)
+        self.turncallR.move(10, self.direction, self.delay_us, self.move_unit)
         
-        self.turncallL.move(15, self.direction, self.delay_us, self.move_unit)
+        self.turncallL.move(10, self.direction, self.delay_us, self.move_unit)
         
         self.straight5cm()        
     
@@ -134,6 +139,21 @@ class TrackDriving:
         self.turncallL.move(15, self.direction, self.delay_us, self.move_unit)
         
         self.reverse5cm()
+        
+        self.turncallR.move(20, self.direction, self.delay_us, self.move_unit)
+        
+        self.turncallL.move(20, self.direction, self.delay_us, self.move_unit)
+        
+        self.turncallR.move(45, self.direction, self.delay_us, self.move_unit)
+        
+        self.turncallL.move(45, self.direction, self.delay_us, self.move_unit)
+       
+    def wigglecheck():
+        self.turncallR.move(15, self.direction, self.delay_us, self.move_unit)
+        
+        self.turncallL.move(15, self.direction, self.delay_us, self.move_unit)
+
+            
 
     
         
