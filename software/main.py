@@ -48,20 +48,19 @@ def straightline():
             magnet.stop()
             time.sleep(2)# wait time for the nut to fall into the box
             Drive.rightturnrobot() # 90 degree turn to the right to face the line again
-            Drive.straight5cm()
-            Drive.straight10cm()
+            Drive.straight(15)
             count += 1
 def ignore():
     global count
     Drive.runrobot()
     if Drive.voltageR1 < thresholdR1 or Drive.voltageR2 < thresholdR2:
-        Drive.straight10cm()
+        Drive.straight(10)
         count += 1
 def fullturn():
     global count
     Drive.runrobot()
     if Drive.voltageL2 < thresholdL2 and Drive.voltageL1 < thresholdL1 and Drive.voltageM < thresholdM:
-        Drive._200()
+        Drive.turn(200)
         count += 1
     
     
