@@ -118,10 +118,26 @@ class TrackDriving:
             145, self.direction, self.delay_us, self.move_unit
             
         )
+        
+    def turn(self,angle):
+        self.turncallR.move(
+            angle, self.direction, self.delay_us, self.move_unit
+        )
+        
     def _200(self):
         self.turncallR.move(
             200, self.direction, self.delay_us, self.move_unit
         )
+        
+    def _70(self):
+        self.turncallR.move(
+            45, self.direction, self.delay_us, self.move_unit
+        )
+    
+    def straight(self,length):
+        self.straightcall.move(
+                length, "backward", self.delay_us, self.move_unit
+            )
         
     def straight5cm(self):
         self.straightcall.move(
