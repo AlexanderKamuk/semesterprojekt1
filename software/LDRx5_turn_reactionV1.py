@@ -14,11 +14,11 @@ class TrackDriving:
         self.signalPins=[Pin(pin,Pin.OUT) for pin in activationPins]
         
         self.sequence=[
-            [1,0,0],
             [0,1,0],
             [0,0,1],
             [0,0,0],
-            [0,1,1]
+            [0,1,1],
+            [1,0,0]
             ]
 
         # Motor pins
@@ -150,9 +150,9 @@ class TrackDriving:
         Determine general action
         """
         # Decide action (right, left, straight) based on LDR reading
-        if self.voltageM < 0.2 and self.voltageL1 > 0.15 and self.voltageR1 < 0.32: 
+        if  self.voltageL1 > 0.12 and self.voltageR1 < 0.35: 
             return 1  # Turn right
-        elif self.voltageM < 0.2 and self.voltageL1 < 0.15 and self.voltageR1 > 0.32:
+        elif self.voltageL1 < 0.12 and self.voltageR1 > 0.35:
             return 2  # Turn left
         else:
             return 3  # Drive straight
@@ -185,9 +185,9 @@ class TrackDriving:
             # End of timer and print used for debugging
             #end = time.ticks_ms()
             #print("loop time", time.ticks_diff(end, start))
-"""
+
 Drive = TrackDriving()
 
 while True:
     Drive.runrobot()
-"""
+
