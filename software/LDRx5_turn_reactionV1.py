@@ -31,8 +31,10 @@ class TrackDriving:
         self.frequency = 18_000
 
         # Movement specific parameters 
-        self.dist_turn = 5
-        self.dist_straight = 1
+        self.dist_turn = 1
+        
+        
+        self.dist_straight = 0.5
         self.direction = "forward"
         self.delay_us = 1500
         self.move_unit = "dist"
@@ -109,7 +111,7 @@ class TrackDriving:
         )
     def leftturnrobot(self): #90 degrees left turn
         self.turncallL.move(
-            150, self.direction, self.delay_us, self.move_unit
+            165, self.direction, self.delay_us, self.move_unit
             
         )
     def straight5cm(self):
@@ -129,26 +131,40 @@ class TrackDriving:
         
     def wiggle(self):
         self.turncallR.move(10, self.direction, self.delay_us, self.move_unit)
+        self.turncallL.move(20, self.direction, self.delay_us, self.move_unit)
+        self.turncallR.move(10, self.direction, self.delay_us, self.move_unit)
         
-        self.turncallL.move(10, self.direction, self.delay_us, self.move_unit)
+        self.straight5cm()
         
-        self.straight5cm()        
-    
         self.turncallR.move(15, self.direction, self.delay_us, self.move_unit)
-        
-        self.turncallL.move(15, self.direction, self.delay_us, self.move_unit)
+        self.turncallL.move(30, self.direction, self.delay_us, self.move_unit)
+        self.turncallR.move(15, self.direction, self.delay_us, self.move_unit)
         
         self.reverse5cm()
         
         self.turncallR.move(20, self.direction, self.delay_us, self.move_unit)
-        
-        self.turncallL.move(20, self.direction, self.delay_us, self.move_unit)
+        self.turncallL.move(40, self.direction, self.delay_us, self.move_unit)
+        self.turncallR.move(20, self.direction, self.delay_us, self.move_unit)
         
         self.turncallR.move(45, self.direction, self.delay_us, self.move_unit)
+        self.turncallL.move(90, self.direction, self.delay_us, self.move_unit)
+        self.turncallR.move(45, self.direction, self.delay_us, self.move_unit)
         
-        self.turncallL.move(45, self.direction, self.delay_us, self.move_unit)
+        self.reverse5cm()
+        
+        self.turncallR.move(55, self.direction, self.delay_us, self.move_unit)        
+        self.turncallL.move(110, self.direction, self.delay_us, self.move_unit)
+        self.turncallR.move(55, self.direction, self.delay_us, self.move_unit)
+        
+        self.straight5cm()
+        
+        self.turncallR.move(55, self.direction, self.delay_us, self.move_unit)        
+        self.turncallL.move(110, self.direction, self.delay_us, self.move_unit)
+        self.turncallR.move(55, self.direction, self.delay_us, self.move_unit)        
+        
+
        
-    def wigglecheck():
+    def wigglecheck(self):
         self.turncallR.move(15, self.direction, self.delay_us, self.move_unit)
         
         self.turncallL.move(15, self.direction, self.delay_us, self.move_unit)
