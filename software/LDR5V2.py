@@ -118,9 +118,9 @@ class TrackDriving:
             145, self.direction, self.delay_us, self.move_unit
             
         )
-    def _190(self):
+    def _200(self):
         self.turncallR.move(
-            190, self.direction, self.delay_us, self.move_unit
+            200, self.direction, self.delay_us, self.move_unit
         )
         
     def straight5cm(self):

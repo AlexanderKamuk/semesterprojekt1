@@ -61,7 +61,7 @@ def fullturn():
     global count
     Drive.runrobot()
     if Drive.voltageL2 < thresholdL2 and Drive.voltageL1 < thresholdL1 and Drive.voltageM < thresholdM:
-        Drive._190()
+        Drive._200()
         count += 1
     
     
