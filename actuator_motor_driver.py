@@ -31,7 +31,7 @@ if unit == "degree": # Convert from degrees to steps
     steps=dist/1.8*microsteps
 elif unit == "cm": # Convert from cm to steps
     circumference=math.pi*gear_diameter
-    steps=dist/(circumference/(200*microsteps))//2 - microsteps*4
+    steps=dist/(circumference/(200*microsteps))//2 - microsteps*10
 else: # Default to unit being steps
     steps=dist
 
