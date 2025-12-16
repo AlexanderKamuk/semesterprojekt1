@@ -31,7 +31,7 @@ if unit == "degree": # Convert from degrees to steps
     steps=dist/1.8*microsteps
 elif unit == "cm": # Convert from cm to steps
     circumference=math.pi*gear_diameter
-    steps=dist/(circumference/(200*microsteps))//2 - microsteps*10
+    steps=dist/(circumference/(200*microsteps))//2 - microsteps*40
 else: # Default to unit being steps
     steps=dist
 
@@ -49,7 +49,7 @@ motor.stop()
 # Define signal pin
 signal=Pin("GP11", Pin.IN, Pin.PULL_DOWN)
 
-directionModes=[directionPos,directionNeg]
+directionModes=[[directionPos,0],[directionNeg,0]]
 mode_idx=0
 
 # Make sure actuator doesn't activate in start
@@ -59,7 +59,7 @@ time.sleep(5)
 # Main loop
 while True:
     if signal.value() == 1: # Activate if signal pin is triggered
-        motor.move_stepper(steps,directionModes[mode_idx],delay_us) # Move actuator in given direction
+        motor.move_stepper(steps-directionModes[mode_idx][1],directionModes[mode_idx][0],delay_us) # Move actuator in given direction
         #print("moving "+directionModes[mode_idx]) # Print movement direction
         mode_idx=(mode_idx+1)%len(directionModes) # Switch movement direction
     else:
