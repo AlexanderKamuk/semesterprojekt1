@@ -1,9 +1,7 @@
 from DifferentialDrive import DifferentialDrive
 from machine import ADC, Pin, Timer
 import time
-import uasyncio as asyncio
-import micropython   # was commented out before?
-#has new fuzzylogicdriver like things in it (The robot now automatically changes its movement speed depending on how “wrong” the LDR readings are, instead of using a fixed speed.)
+import micropython
 
 class TrackDriving:
     def __init__(self):
@@ -36,18 +34,8 @@ class TrackDriving:
         self.dist_turn = 5
         self.dist_straight = 1
         self.direction = "forward"
-        self.delay_us = 2500          # Delay will be regulated through fuzzy logic
+        self.delay_us = 1500
         self.move_unit = "dist"
-
-
-        # Max absolute voltage difference between M and L that we care about
-        # (used for normalizing into a 0–1 "error" value)
-        self.fuzzy_diff_max = 1.5
-
-        # Delay range in microseconds. Big error => small delay (fast),
-        # small error => larger delay (slower / more precise)
-        self.min_delay_us = 0       # faster
-        self.max_delay_us = 1000    # slower
 
         # Setup of call from DifferentialDrive class
         # Right turn
@@ -86,7 +74,10 @@ class TrackDriving:
 
         # Sensor voltage storage
         self.voltageM = 0.0
-        self.voltageL = 0.0
+        self.voltageL2 = 0.0
+        self.voltageL1 = 0.0
+        self.voltageR1 = 0.0
+        self.voltageR2 = 0.0
 
     def set_pins(self, combination):
         for pin, value in zip(self.signalPins, combination):
@@ -98,24 +89,19 @@ class TrackDriving:
         Read raw values and convert them to voltages for middle (M) and left (L) LDR sensors.
         """
         self.set_pins(self.sequence[0])
-        raw_valueL2 = self.adc.read_u16()
-        self.voltageL2 = raw_valueL2 * 3.3/65535
-        
+        self.voltageL2 = self.adc.read_u16() * 3.3 / 65535
+
         self.set_pins(self.sequence[1])
-        raw_valueL1 = self.adc.read_u16()
-        self.voltageL1 = raw_valueL1 * 3.3/65535
-        
+        self.voltageL1 = self.adc.read_u16() * 3.3 / 65535
+
         self.set_pins(self.sequence[2])
-        raw_valueM = self.adc.read_u16()
-        self.voltageM = raw_valueM * 3.3/65535
-        
+        self.voltageM = self.adc.read_u16() * 3.3 / 65535
+
         self.set_pins(self.sequence[3])
-        raw_valueR1 = self.adc.read_u16()
-        self.voltageR1 = raw_valueR1 * 3.3/65535
-        
+        self.voltageR1 = self.adc.read_u16() * 3.3 / 65535
+
         self.set_pins(self.sequence[4])
-        raw_valueR2 = self.adc.read_u16()
-        self.voltageR2 = raw_valueR2 * 3.3/65535
+        self.voltageR2 = self.adc.read_u16() * 3.3 / 65535
     
     def rightturnrobot(self): #90 degrees right turn
         self.turncallR.move(
@@ -137,16 +123,14 @@ class TrackDriving:
     @micropython.native
     def chooseAction(self):
         """
-        Decide which action the robot should take AND update delay_us using a simple rule.
-
         Returns:
             1: Turn right
             2: Turn left
-            3: Drive straight 
+            3: Drive straight
         """
         
         """
-        2) BOOLIAN LOGIC
+        BOOLIAN LOGIC
         Determine general action
         """
         # Decide action (right, left, straight) based on LDR reading
@@ -158,15 +142,8 @@ class TrackDriving:
             return 3  # Drive straight
 
     def runrobot(self):
-        """
-        Main control loop: read sensors, compute fuzzy speed + action, and move the robot.
-    """
-        self.ReadVoltage() # Read LDR sensors
-        #start = time.ticks_ms() # Timer used for debugging and comparison
-
-        # chooseAction() now:
-        # - updates self.delay_us ( speed)
-        # - returns which manoeuvre to perform (1/2/3)
+        """Main control loop: read sensors, decide action, move robot."""
+        self.ReadVoltage()
         action = self.chooseAction()
 
         # Act out the earlier determined action
@@ -190,4 +167,3 @@ class TrackDriving:
 
 #while True:
 #    Drive.runrobot()
-
