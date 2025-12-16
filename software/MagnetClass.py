@@ -1,7 +1,7 @@
 from machine import Pin, PWM
 class Electromagnet:
     def __init__(self):
-        self.pwm = PWM(Pin(15)) #Pin 15 from the Pico
+        self.pwm = PWM(Pin(8)) #Pin 15 from the Pico
         self.pwm.freq(8000) # pwm freq 8kHz
     #Start
     def start(self):

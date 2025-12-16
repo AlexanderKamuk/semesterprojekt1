@@ -10,47 +10,48 @@ magnet = Electromagnet()
 #magnet.start()
 #magnet.stop()
 
+#actuator Pin
+actuatorpin=Pin(11, Pin.OUT)
+actuatorpin.value(0)
+
 #States
 def straightline():
     global count 
     Drive.runrobot() #start moving forward
     if Drive.voltageR2 <0.22: #Value for detecting Black
-        time.sleep(0.8) #small debounce
+        time.sleep(1) #small debounce
         if Drive.voltageR2 < 0.22: #Value for detecting Black
             magnet.start()
-            Drive.rightturnrobot() # 90 degree turn to the right
+            Drive.leftturnrobot() # 90 degree turn to the left
             #Actuator - roll out 
-#            Pin.toggle(pin_navn)
-#            time.sleep(0.01)
-#            Pin.toggle(pin_navn)
-#            time.sleep(7) #wait time for roll out
-            
-            #needs wiggle function
-            
+            Pin.toggle(actuatorpin)
+            time.sleep(0.01)
+            Pin.toggle(actuatorpin)
+            time.sleep(7) #wait time for roll out
+            Drive.wiggle()
             #Actuator - roll in
-#            Pin.toggle(pin_navn)
-#            time.sleep(0.01)
-#            Pin.toggle(pin_navn)
+            Pin.toggle(actuatorpin)
+            time.sleep(0.01)
+            Pin.toggle(actuatorpin)
             magnet.stop()
-            Drive.leftturnrobot() # 90 degree turn to the left to face the line again
+            Drive.rightturnrobot() # 90 degree turn to the right to face the line again
     elif Drive.voltageL2 < 0.2: #Value for detecting Black
         time.sleep(0.3) #small debounce
         if Drive.voltageL2 < 0.2: #Value for detecting Black
             magnet.start()
-            Drive.leftturnrobot() # 90 degree turn to the left
+            Drive.rightturnrobot() # 90 degree turn to the right
             #Actuator - roll out 
-#            Pin.toggle(pin_navn)
-#            time.sleep(0.01)
-#            Pin.toggle(pin_navn)
-#            time.sleep(7)#wait time for roll out
-            #needs wiggle function
-            
+            Pin.toggle(actuatorpin)
+            time.sleep(0.01)
+            Pin.toggle(actuatorpin)
+            time.sleep(7)#wait time for roll out
+            Drive.wiggle()
             #Actuator - roll in
-#            Pin.toggle(pin_navn)
-#            time.sleep(0.01)
-#            Pin.toggle(pin_navn)
+            Pin.toggle(actuatorpin)
+            time.sleep(0.01)
+            Pin.toggle(actuatorpin)
             magnet.stop()
-            Drive.rightturnrobot() # 90 degree turn to the right to face the line again
+            Drive.leftturnrobot() # 90 degree turn to the right to face the line again
             count += 1
             print("first state done")
 def straightline2(): #state to ignore left and right readings
@@ -59,12 +60,15 @@ def straightline2(): #state to ignore left and right readings
     if Drive.voltageR2 < 0.3 and Drive.voltageL2 < 0.3:
         count +=1 # move to next state
         print("second state done")
-def home1(): #return home
+    Drive.runrobot()
+    
+def home1line1(): #return home
     global count
     Drive.rightturnrobot()
     Drive.rightturnrobot()
+    count += 1
+def home2line1():
     Drive.runrobot() #move forward
-    time.sleep(2)
     if Drive.voltageR1 < 0.2 and Drive.voltageM < 0.2 and Drive.voltageL1 < 0.2:
         time.sleep(2) #give time to fully reach home position
         Drive.rightturnrobot()
@@ -130,16 +134,19 @@ while True:
 
     #back to start
     if count == 4:
-        home1()
+        home1line1()
     
     #turn left to line 2
     if count == 5:
-        line2()
+        home2line1()
 
     if count in (6, 7):
-        line2pickup()
+        line2()
     
     if count == 8:
+        line2pickup()
+        
+    if count == 9:
         home2()
     time.sleep(0.01)#to prevent CPU overload
         
