@@ -111,9 +111,14 @@ class TrackDriving:
         )
     def leftturnrobot(self): #90 degrees left turn
         self.turncallL.move(
-            165, self.direction, self.delay_us, self.move_unit
+            145, self.direction, self.delay_us, self.move_unit
             
         )
+    def _180(self):
+        self.turncallR.move(
+            180, self.direction, self.delay_us, self.move_unit
+        )
+        
     def straight5cm(self):
         self.straightcall.move(
                 5, "backward", self.delay_us, self.move_unit
@@ -162,15 +167,6 @@ class TrackDriving:
         self.turncallL.move(110, self.direction, self.delay_us, self.move_unit)
         self.turncallR.move(55, self.direction, self.delay_us, self.move_unit)        
         
-
-       
-    def wigglecheck(self):
-        self.turncallR.move(15, self.direction, self.delay_us, self.move_unit)
-        
-        self.turncallL.move(15, self.direction, self.delay_us, self.move_unit)
-
-            
-
     
         
     @micropython.native
@@ -187,9 +183,9 @@ class TrackDriving:
         Determine general action
         """
         # Decide action (right, left, straight) based on LDR reading
-        if  self.voltageL1 > 0.12 and self.voltageR1 < 0.35: 
+        if  self.voltageL2 > 0.1 and self.voltageM < 0.1: 
             return 1  # Turn right
-        elif self.voltageL1 < 0.12 and self.voltageR1 > 0.35:
+        elif self.voltageL2 < 0.1 and self.voltageM > 0.1:
             return 2  # Turn left
         else:
             return 3  # Drive straight
@@ -220,3 +216,4 @@ class TrackDriving:
 
 #while True:
 #    Drive.runrobot()
+
