@@ -48,8 +48,7 @@ def straightline():
             magnet.stop()
             time.sleep(2)# wait time for the nut to fall into the box
             Drive.rightturnrobot() # 90 degree turn to the right to face the line again
-            Drive.straight5cm()
-            Drive.straight10cm()
+            Drive.straight(15)
             count += 1
             print(count)
 def ignore():
@@ -84,14 +83,14 @@ while True:
     if count == 4:
         ignore()
     if count == 5:
-        LDR5V2._70()
+        Drive.turn(70)
     if count == 6:
         straightline()
     if count == 7:
         straightline()
     if count == 8:
         ignore()
-        LDR5V2._70()
+        Drive.turn(70)
         ignore()
     if count == 7:
         ignore()
