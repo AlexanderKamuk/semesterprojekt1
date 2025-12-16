@@ -125,10 +125,16 @@ class TrackDriving:
         self.turncallL.move(
             90, self.direction, self.delay_us, self.move_unit
         )
+    def straight5cm(self):
+        self.straightcall.move(
+                5, "backward", self.delay_us, self.move_unit
+            )
     def wiggle(self):
         self.turncallR.move(15, self.direction, self.delay_us, self.move_unit)
         
         self.turncallL.move(15, self.direction, self.delay_us, self.move_unit)
+        
+        self.straight5cm()
     
         self.turncallR.move(15, self.direction, self.delay_us, self.move_unit)
         

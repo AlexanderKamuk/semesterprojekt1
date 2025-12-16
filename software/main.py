@@ -11,7 +11,7 @@ magnet = Electromagnet()
 #magnet.stop()
 
 #actuator Pin
-actuatorpin=Pin(11, Pin.OUT)
+actuatorpin=Pin(12, Pin.OUT)
 actuatorpin.value(0)
 
 #States
@@ -19,54 +19,69 @@ def straightline():
     global count 
     Drive.runrobot() #start moving forward
     if Drive.voltageR2 <0.22: #Value for detecting Black
-        time.sleep(1) #small debounce
+        time.sleep(0.1) #small debounce
         if Drive.voltageR2 < 0.22: #Value for detecting Black
-            magnet.start()
             Drive.leftturnrobot() # 90 degree turn to the left
+            magnet.start()
+            
             #Actuator - roll out 
             Pin.toggle(actuatorpin)
             time.sleep(0.01)
             Pin.toggle(actuatorpin)
             time.sleep(7) #wait time for roll out
+            
             Drive.wiggle()
+            
             #Actuator - roll in
             Pin.toggle(actuatorpin)
             time.sleep(0.01)
             Pin.toggle(actuatorpin)
+            time.sleep(7)
+            
             magnet.stop()
             Drive.rightturnrobot() # 90 degree turn to the right to face the line again
+            Drive.straight5cm()
+            
     elif Drive.voltageL2 < 0.2: #Value for detecting Black
-        time.sleep(0.3) #small debounce
+        time.sleep(0.1) #small debounce
         if Drive.voltageL2 < 0.2: #Value for detecting Black
             magnet.start()
             Drive.rightturnrobot() # 90 degree turn to the right
+            
             #Actuator - roll out 
             Pin.toggle(actuatorpin)
             time.sleep(0.01)
             Pin.toggle(actuatorpin)
             time.sleep(7)#wait time for roll out
+            
             Drive.wiggle()
+            
             #Actuator - roll in
             Pin.toggle(actuatorpin)
             time.sleep(0.01)
             Pin.toggle(actuatorpin)
+            time.sleep(7)
+            
             magnet.stop()
             Drive.leftturnrobot() # 90 degree turn to the right to face the line again
             count += 1
             print("first state done")
+            
 def straightline2(): #state to ignore left and right readings
     global count
     Drive.runrobot() # keep moving forward
     if Drive.voltageR2 < 0.3 and Drive.voltageL2 < 0.3:
         count +=1 # move to next state
         print("second state done")
-    Drive.runrobot()
+        Drive.straight5cm
+        
     
 def home1line1(): #return home
     global count
     Drive.rightturnrobot()
     Drive.rightturnrobot()
     count += 1
+    
 def home2line1():
     Drive.runrobot() #move forward
     if Drive.voltageR1 < 0.2 and Drive.voltageM < 0.2 and Drive.voltageL1 < 0.2:
@@ -74,6 +89,7 @@ def home2line1():
         Drive.rightturnrobot()
         Drive.rightturnrobot()
         count += 1
+
 
 def line2():
     global count
@@ -116,7 +132,7 @@ def home2():
             Drive.rightturnrobot()
             Drive.runrobot()
             
-#time.sleep(3)
+time.sleep(3)
 count = 1
 while True:
     #first part of first line

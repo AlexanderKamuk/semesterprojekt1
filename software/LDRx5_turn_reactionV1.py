@@ -28,7 +28,7 @@ class TrackDriving:
         self.microsteps_per_step = 10
         self.pwm_pct = 20
         self.turnmode = "diff"
-        self.frequency = 40_000
+        self.frequency = 18_000
 
         # Movement specific parameters 
         self.dist_turn = 5
@@ -110,15 +110,32 @@ class TrackDriving:
     def leftturnrobot(self): #90 degrees left turn
         self.turncallL.move(
             90, self.direction, self.delay_us, self.move_unit
+            
         )
+    def straight5cm(self):
+        self.straightcall.move(
+                5, "backward", self.delay_us, self.move_unit
+            )
+    def reverse5cm(self):
+    self.straightcall.move(
+            5, "forward", self.delay_us, self.move_unit
+        )
+    
+        
     def wiggle(self):
         self.turncallR.move(15, self.direction, self.delay_us, self.move_unit)
         
         self.turncallL.move(15, self.direction, self.delay_us, self.move_unit)
+        
+        self.straight5cm()        
     
         self.turncallR.move(15, self.direction, self.delay_us, self.move_unit)
         
         self.turncallL.move(15, self.direction, self.delay_us, self.move_unit)
+        
+        self.reverse5cm()
+
+    
         
     @micropython.native
     def chooseAction(self):
