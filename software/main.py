@@ -17,8 +17,7 @@ actuatorpin.value(0)
 #States
 def straightline():
     global count
-    Drive.straight10cm() #start moving forward
-    Drive.wigglecheck()
+    Drive.runrobot() #start moving forward
     if Drive.voltageR2 <0.1: #Value for detecting Black
         time.sleep(0.5) #small debounce
         if Drive.voltageR2 < 0.1: #Value for detecting Black
