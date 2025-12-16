@@ -82,13 +82,14 @@ def straightline2(): #state to ignore left and right readings
     if Drive.voltageR2 < 0.1 and Drive.voltageL2 < 0.2:
         count +=1 # move to next state
         print("second state done")
-        Drive.straight5cm
+        Drive.straight5cm()
         
     
 def home1line1(): #return home
     global count
     Drive.rightturnrobot()
     Drive.rightturnrobot()
+    Drive.straight10cm()
     count += 1
     
 def home2line1():
