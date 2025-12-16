@@ -18,9 +18,10 @@ actuatorpin.value(0)
 def straightline():
     global count 
     Drive.runrobot() #start moving forward
-    if Drive.voltageR2 <0.22: #Value for detecting Black
-        time.sleep(0.1) #small debounce
-        if Drive.voltageR2 < 0.22: #Value for detecting Black
+    if Drive.voltageR2 <0.1: #Value for detecting Black
+        time.sleep(0.5) #small debounce
+        if Drive.voltageR2 < 0.1: #Value for detecting Black
+            Drive.reverse5cm()
             Drive.leftturnrobot() # 90 degree turn to the left
             magnet.start()
             
@@ -42,11 +43,12 @@ def straightline():
             Drive.rightturnrobot() # 90 degree turn to the right to face the line again
             Drive.straight5cm()
             
-    elif Drive.voltageL2 < 0.2: #Value for detecting Black
-        time.sleep(0.1) #small debounce
-        if Drive.voltageL2 < 0.2: #Value for detecting Black
-            magnet.start()
+    elif Drive.voltageL2 < 0.15: #Value for detecting Black
+        time.sleep(0.5) #small debounce
+        if Drive.voltageL2 < 0.15: #Value for detecting Black
+            Drive.reverse5cm()
             Drive.rightturnrobot() # 90 degree turn to the right
+            magnet.start()
             
             #Actuator - roll out 
             Pin.toggle(actuatorpin)
