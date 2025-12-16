@@ -14,9 +14,9 @@ magnet = Electromagnet()
 def straightline():
     global count 
     Drive.runrobot() #start moving forward
-    if Drive.voltageR2 <0.25: #Value for detecting Black
-        time.sleep(0.05) #small debounce
-        if Drive.voltageR2 < 0.25: #Value for detecting Black
+    if Drive.voltageR2 <0.22: #Value for detecting Black
+        time.sleep(0.8) #small debounce
+        if Drive.voltageR2 < 0.22: #Value for detecting Black
             magnet.start()
             Drive.rightturnrobot() # 90 degree turn to the right
             #Actuator - roll out 
@@ -34,7 +34,7 @@ def straightline():
             magnet.stop()
             Drive.leftturnrobot() # 90 degree turn to the left to face the line again
     elif Drive.voltageL2 < 0.2: #Value for detecting Black
-        time.sleep(0.05) #small debounce
+        time.sleep(0.3) #small debounce
         if Drive.voltageL2 < 0.2: #Value for detecting Black
             magnet.start()
             Drive.leftturnrobot() # 90 degree turn to the left
@@ -52,16 +52,19 @@ def straightline():
             magnet.stop()
             Drive.rightturnrobot() # 90 degree turn to the right to face the line again
             count += 1
+            print("first state done")
 def straightline2(): #state to ignore left and right readings
     global count
     Drive.runrobot() # keep moving forward
-    if Drive.voltageR2 < 0.25 and Drive.voltageL2 < 0.2:
+    if Drive.voltageR2 < 0.3 and Drive.voltageL2 < 0.3:
         count +=1 # move to next state
+        print("second state done")
 def home1(): #return home
     global count
     Drive.rightturnrobot()
     Drive.rightturnrobot()
     Drive.runrobot() #move forward
+    time.sleep(2)
     if Drive.voltageR1 < 0.2 and Drive.voltageM < 0.2 and Drive.voltageL1 < 0.2:
         time.sleep(2) #give time to fully reach home position
         Drive.rightturnrobot()
@@ -109,21 +112,21 @@ def home2():
             Drive.rightturnrobot()
             Drive.runrobot()
             
-time.sleep(3)
+#time.sleep(3)
 count = 1
 while True:
     #first part of first line
     if count == 1:
-        straightline()
-        
+        straightline()        
 
     #second part of first line
     if count == 2:
-        straightline2() 
-
-    #third part of first line
+        straightline2()
+        
+    #third part of first line    
     if count == 3:
         straightline()
+
 
     #back to start
     if count == 4:
@@ -138,6 +141,6 @@ while True:
     
     if count == 8:
         home2()
- #to prevent CPU overload
+    time.sleep(0.01)#to prevent CPU overload
         
     

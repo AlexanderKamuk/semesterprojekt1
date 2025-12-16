@@ -186,8 +186,8 @@ class TrackDriving:
             #end = time.ticks_ms()
             #print("loop time", time.ticks_diff(end, start))
 
-Drive = TrackDriving()
+#Drive = TrackDriving()
 
-while True:
-    Drive.runrobot()
+#while True:
+#    Drive.runrobot()
 
