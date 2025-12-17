@@ -52,7 +52,7 @@ def ReadVoltage():
 
 while True:
     ReadVoltage()
-    time.sleep(0.2)
+    time.sleep(0.5)
 
 
 

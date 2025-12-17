@@ -119,10 +119,15 @@ class TrackDriving:
             
         )
         
-    def turn(self,angle):
-        self.turncallR.move(
-            angle, self.direction, self.delay_us, self.move_unit
-        )
+    def turn(self,angle, direction="right"):
+        if direction=="left":
+            self.turncallL.move(
+                angle, self.direction, self.delay_us, self.move_unit
+            )
+        else:
+            self.turncallR.move(
+                angle, self.direction, self.delay_us, self.move_unit
+            )
         
     def _200(self):
         self.turncallR.move(
@@ -155,37 +160,32 @@ class TrackDriving:
     
         
     def wiggle(self):
-        self.turncallR.move(10, self.direction, self.delay_us, self.move_unit)
-        self.turncallL.move(20, self.direction, self.delay_us, self.move_unit)
-        self.turncallR.move(10, self.direction, self.delay_us, self.move_unit)
+        self.turn(10)
+        self.turn(20,"left")
+        self.turn(10)
         
-        self.straight5cm()
+        self.straight(5)
         
-        self.turncallR.move(15, self.direction, self.delay_us, self.move_unit)
-        self.turncallL.move(30, self.direction, self.delay_us, self.move_unit)
-        self.turncallR.move(15, self.direction, self.delay_us, self.move_unit)
-        
-        self.reverse5cm()
-        
-        self.turncallR.move(20, self.direction, self.delay_us, self.move_unit)
-        self.turncallL.move(40, self.direction, self.delay_us, self.move_unit)
-        self.turncallR.move(20, self.direction, self.delay_us, self.move_unit)
-        
-        self.turncallR.move(45, self.direction, self.delay_us, self.move_unit)
-        self.turncallL.move(90, self.direction, self.delay_us, self.move_unit)
-        self.turncallR.move(45, self.direction, self.delay_us, self.move_unit)
+        self.turn(15)
+        self.turn(30,"left")
+        self.turn(15)
         
         self.reverse5cm()
+         
+        self.turn(20)
+        self.turn(40,"left")
+        self.turn(20)
         
-        self.turncallR.move(55, self.direction, self.delay_us, self.move_unit)        
-        self.turncallL.move(110, self.direction, self.delay_us, self.move_unit)
-        self.turncallR.move(55, self.direction, self.delay_us, self.move_unit)
+        self.straight(5)
         
+        self.turn(45)
+        self.turn(90,"left")
+        self.turn(45)
+        
+        self.reverse5cm()
+
+
         self.straight5cm()
-        
-        self.turncallR.move(55, self.direction, self.delay_us, self.move_unit)        
-        self.turncallL.move(110, self.direction, self.delay_us, self.move_unit)
-        self.turncallR.move(55, self.direction, self.delay_us, self.move_unit)        
         
     
         
@@ -236,4 +236,5 @@ class TrackDriving:
 
 #while True:
 #    Drive.runrobot()
+
 

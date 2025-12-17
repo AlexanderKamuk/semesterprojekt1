@@ -71,7 +71,7 @@ def fullturn():
     
  
 time.sleep(3)
-count = 1
+count = 4
 while True:
     #first part of first line
     if count == 1:
@@ -83,18 +83,31 @@ while True:
     if count == 4:
         ignore()
     if count == 5:
-        Drive.turn(70)
+        Drive.turn(55)
+        count += 1
     if count == 6:
-        straightline()
+        Drive.straight(3)    
+        count += 1
     if count == 7:
         straightline()
     if count == 8:
+        straightline()
+    if count == 9:
+        Drive.turn(10,"left")
+        Drive.straight(4)
+        count += 1
+    if count == 10:
         ignore()
-        Drive.turn(70)
+    if count == 11:
+        Drive.turn(55)
+        count += 1
+    if count == 12:
         ignore()
-    if count == 7:
+    if count == 13:
         ignore()
-    if count == 8:
+    if count == 14:
+        ignore()
+    if count == 15:
         ignore()
 
 
