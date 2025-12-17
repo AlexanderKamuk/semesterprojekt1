@@ -102,12 +102,4 @@ while True:
         Drive.turn(55)
         count += 1
     if count == 12:
-        ignore()
-    if count == 13:
-        ignore()
-    if count == 14:
-        ignore()
-    if count == 15:
-        ignore()
-
-
+        Drive.runrobot()
