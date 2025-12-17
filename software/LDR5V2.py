@@ -21,12 +21,13 @@ class TrackDriving:
 
         # Motor pins
         self.left = [0, 1, 2, 3]
-        self.right = [4, 5, 6, 7]
+
+self.right = [4, 5, 6, 7]
 
         # General driving parameters
         self.stepmode = "MICRO"
-        self.microsteps_per_step = 10
-        self.pwm_pct = 20
+        self.microsteps_per_step = 8
+        self.pwm_pct = 25
         self.turnmode = "diff"
         self.frequency = 18_000
 
@@ -40,7 +41,7 @@ class TrackDriving:
         
         self.dist_straight = 0.5
         self.direction = "forward"
-        self.delay_us = 1500
+        self.delay_us = 1200
         self.move_unit = "dist"
 
         # Setup of call from DifferentialDrive class
