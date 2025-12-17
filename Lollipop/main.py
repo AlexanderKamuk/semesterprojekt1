@@ -71,7 +71,7 @@ def fullturn():
     
  
 time.sleep(3)
-count = 4
+count = 1
 while True:
     #first part of first line
     if count == 1:

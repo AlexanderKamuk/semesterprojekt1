@@ -50,18 +50,21 @@ def straightline():
             Drive.rightturnrobot() # 90 degree turn to the right to face the line again
             Drive.straight(15)
             count += 1
+            print(count)
 def ignore():
     global count
     Drive.runrobot()
     if Drive.voltageR1 < thresholdR1 or Drive.voltageR2 < thresholdR2:
         Drive.straight(10)
         count += 1
+        print(count)
 def fullturn():
     global count
     Drive.runrobot()
     if Drive.voltageL2 < thresholdL2 and Drive.voltageL1 < thresholdL1 and Drive.voltageM < thresholdM:
         Drive.turn(200)
         count += 1
+        print(count)
     
     
     
@@ -77,13 +80,18 @@ while True:
     if count == 3:
         straightline()
     if count == 4:
-        fullturn()
-    if count == 5:
-        straightline()
-    if count == 6:
         ignore()
-    if count == 7:
+    if count == 5:
+        Drive.turn(200)
+        Drive.straight(10)
+        count += 1
+    if count == 6:
         straightline()
+    if count == 7:
+        ignore()
     if count == 8:
+        straightline()
+    if count == 9:
         Drive.runrobot()
+
 

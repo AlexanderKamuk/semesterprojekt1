@@ -111,11 +111,11 @@ class TrackDriving:
     
     def rightturnrobot(self): #90 degrees right turn
         self.turncallR.move(
-            145, self.direction, self.delay_us, self.move_unit
+            155, self.direction, self.delay_us, self.move_unit
         )
     def leftturnrobot(self): #90 degrees left turn
         self.turncallL.move(
-            145, self.direction, self.delay_us, self.move_unit
+            155, self.direction, self.delay_us, self.move_unit
             
         )
         
@@ -157,6 +157,11 @@ class TrackDriving:
         self.straightcall.move(
                 5, "forward", self.delay_us, self.move_unit
             )
+        
+    def reverse(self,length):
+        self.straightcall.move(
+                length, "forward", self.delay_us, self.move_unit
+            )
     
         
     def wiggle(self):
@@ -164,28 +169,29 @@ class TrackDriving:
         self.turn(20,"left")
         self.turn(10)
         
-        self.straight(5)
+        self.reverse(2)
         
         self.turn(15)
         self.turn(30,"left")
         self.turn(15)
         
-        self.reverse5cm()
+        self.straight(2)
          
         self.turn(20)
         self.turn(40,"left")
         self.turn(20)
         
-        self.straight(5)
+        self.reverse(2)
         
         self.turn(45)
         self.turn(90,"left")
         self.turn(45)
         
-        self.reverse5cm()
+        self.straight(2)
+        
+    
 
 
-        self.straight5cm()
         
     
         
