@@ -1,0 +1,16 @@
+To do:
+
+Generel:
+	- 3D-print improved LDR-box (done)
+	- Påbegynd rapport (udkastsdokument oprettet, skal stadig skrives)
+
+Tracking:
+	- Analyze new LDR values (done)
+	- Introduce curved movement (done)
+
+Logistics:
+	- Remake electromagnet (Done)
+	- Make PCB for electromagnet (Done)
+	- Solder 5-LDR-PCB (done)
+	- Make linear actuator (done)
+	- Make state machine for path planning (done)
